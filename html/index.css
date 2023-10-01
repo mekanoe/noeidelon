@@ -12,6 +12,9 @@ header {
     font-size: 1rem;
     margin-left: 0.5rem;
     color: hsl(39, 68.6%, 31.2%);
+    & a:hover {
+      color: hsl(39, 100%, 80%);
+    }
   }
 }
 
