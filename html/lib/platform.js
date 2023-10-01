@@ -11,9 +11,9 @@ export const main = (next) => {
 
   // Only continue if WebGL is available and working
   if (gl === null) {
-    alert(
-      "Unable to initialize WebGL. Your browser or machine may not support it."
-    );
+    document.querySelector(
+      "main"
+    ).innerHTML = `<div><i>your browser didn't let me set up webgl</i></div>`;
     return;
   }
 

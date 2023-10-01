@@ -1,6 +1,7 @@
 export class Shader {
-  constructor(gl) {
+  constructor(gl, core) {
     this.gl = gl;
+    this.core = core;
     this.program = gl.createProgram();
     this.startTime = Date.now();
   }

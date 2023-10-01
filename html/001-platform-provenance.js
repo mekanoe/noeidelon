@@ -3,7 +3,7 @@ import { Shader } from "./lib/shader.js";
 import { BasicPlane } from "./lib/basic-plane.js";
 
 main((gl, core) => {
-  const shader = new Shader(gl)
+  const shader = new Shader(gl, core)
     .attach(
       gl.VERTEX_SHADER,
       `
