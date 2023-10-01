@@ -30,7 +30,12 @@ export class Telemetry {
     const framesPerSecond = 1000 / averageFrameTime;
 
     this.el.innerHTML = `
-      ${framesPerSecond.toFixed(1)} FPS (${averageFrameTime.toFixed(3)} ms)
+      ${framesPerSecond.toFixed(1)} FPS (${averageFrameTime.toFixed(
+        3
+      )} ms)<br />
+      bU: ${this.app.registry.onBeforeUpdate.length} | U: ${
+        this.app.registry.onUpdate.length
+      } | aU: ${this.app.registry.onAfterUpdate.length}
     `;
 
     this.lastFrameTime = this.app.now();

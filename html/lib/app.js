@@ -18,7 +18,7 @@ export class App {
     this.canvas = document.querySelector("canvas");
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.gl = this.canvas.getContext("webgl");
+    this.gl = this.canvas.getContext("webgl2");
 
     if (this.gl === null) {
       document.querySelector(

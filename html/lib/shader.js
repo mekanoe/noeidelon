@@ -12,12 +12,12 @@ export class Shader {
     this.gl.shaderSource(shader, source);
     this.gl.compileShader(shader);
 
-    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
-      throw new Error(
-        "An error occurred compiling the shaders: " +
-          this.gl.getShaderInfoLog(shader)
-      );
-    }
+    // if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
+    //   throw new Error(
+    //     "An error occurred compiling the shaders: " +
+    //       this.gl.getShaderInfoLog(shader)
+    //   );
+    // }
 
     this.gl.attachShader(this.program, shader);
 

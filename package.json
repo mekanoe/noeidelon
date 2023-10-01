@@ -1,7 +1,7 @@
 {
   "name": "noeidelon",
   "type": "module",
-  "main": "./generators/generate.js",
+  "main": "./generators/generate.ts",
   "scripts": {
     "build": "bun $BUNFLAGS ./generators/generate.ts",
     "build:watch": "BUNFLAGS=--watch bun run build",

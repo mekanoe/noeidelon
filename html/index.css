@@ -29,7 +29,7 @@ ul {
   margin: 0;
   padding-left: 3rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   font-size: 1.5rem;
 }
 
