@@ -2,7 +2,7 @@ import { main } from "./lib/platform.js";
 import { Shader } from "./lib/shader.js";
 import { BasicPlane } from "./lib/basic-plane.js";
 
-main((gl, core) => {
+main({ fov: 20 }, (gl, core) => {
   const shader = new Shader(gl, core)
     .attach(
       gl.VERTEX_SHADER,

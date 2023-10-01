@@ -1,6 +1,6 @@
 export const clear = (gl) => {};
 
-export const main = (next) => {
+export const main = (config = { fov: 45 }, next = () => {}) => {
   const canvas = document.querySelector("canvas");
 
   canvas.width = window.innerWidth;
@@ -17,14 +17,14 @@ export const main = (next) => {
     return;
   }
 
-  const core = renderingCore(gl);
+  const core = renderingCore(gl, config);
   core.clear();
 
   next(gl, core);
 };
 
-const renderingCore = (gl) => {
-  const fieldOfView = (10 * Math.PI) / 180; // in radians
+const renderingCore = (gl, config = {}) => {
+  const fieldOfView = (config.fov * Math.PI) / 180; // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
   const zNear = 0.1;
   const zFar = 100.0;
