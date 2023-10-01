@@ -1,3 +1,5 @@
+import { Telemetry } from "./telemetry.js";
+
 export class App {
   constructor(
     config = {
@@ -54,6 +56,8 @@ export class App {
 
     this.clear();
     this.onBeforeUpdate(() => this.clear());
+
+    this.telemetry = new Telemetry(this);
   }
 
   clear() {

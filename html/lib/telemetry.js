@@ -2,11 +2,7 @@ export class Telemetry {
   constructor(app, selector = "#telemetry") {
     this.app = app;
     this.el = document.querySelector(selector);
-    if (!this.el) {
-      throw new Error(`no element found matching ${selector}`);
-    }
-
-    if (location.search.includes("telemetry")) {
+    if (this.el && location.search.includes("telemetry")) {
       this.el.style.display = "block";
       this.app.onAfterUpdate(() => this.onAfterUpdate());
     }
