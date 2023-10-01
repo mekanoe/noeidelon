@@ -3,8 +3,8 @@
   "type": "module",
   "main": "./generators/generate.js",
   "scripts": {
-    "build": "bun ./generators/generate.ts",
-    "build:watch": "bun run build --watch",
+    "build": "bun $BUNFLAGS ./generators/generate.ts",
+    "build:watch": "BUNFLAGS=--watch bun run build",
     "serve": "serve ./html",
     "dev": "run-p serve build:watch"
   },

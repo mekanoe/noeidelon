@@ -2,6 +2,10 @@ export class Object {
   constructor(app) {
     this.gl = app.gl;
     this.app = app;
+
+    this.vertexPositions = new Float32Array([]);
+    this.positionBuffer = null;
+    this.textureBuffer = null;
   }
 
   initBuffer(data, draw = this.gl.STATIC_DRAW) {

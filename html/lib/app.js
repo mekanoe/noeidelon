@@ -9,6 +9,7 @@ export class App {
       onStart: [],
       onUpdate: [],
       onBeforeUpdate: [],
+      onAfterUpdate: [],
     };
 
     this.config = config;
@@ -77,6 +78,10 @@ export class App {
     this.registry.onBeforeUpdate.push(fn);
   }
 
+  onAfterUpdate(fn) {
+    this.registry.onAfterUpdate.push(fn);
+  }
+
   start() {
     this.registry.onStart.forEach((fn) => fn(this));
   }
@@ -84,13 +89,27 @@ export class App {
   update() {
     this.registry.onBeforeUpdate.forEach((fn) => fn(this));
     this.registry.onUpdate.forEach((fn) => fn(this));
+    this.registry.onAfterUpdate.forEach((fn) => fn(this));
   }
 
-  loop(now) {
-    this._now = now;
-    this.update();
+  oneShot() {
+    requestAnimationFrame((now) => {
+      this._now = now;
+      this.start();
+      this.update();
+    });
+  }
 
-    requestAnimationFrame((newNow) => this.loop(newNow));
+  loop() {
+    const run = (now) => {
+      this._now = now;
+      this.update();
+      requestAnimationFrame(run);
+    };
+
+    requestAnimationFrame((now) => {
+      run(now);
+    });
   }
 
   now() {

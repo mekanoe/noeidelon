@@ -1,8 +1,10 @@
 import { Shader } from "./lib/shader.js";
 import { BasicPlane } from "./lib/basic-plane.js";
 import { App } from "./lib/app.js";
+import { Telemetry } from "./lib/telemetry.js";
 
 const app = new App({ fov: 20 });
+new Telemetry(app);
 const gl = app.gl;
 
 const shader = new Shader(app)
