@@ -10,6 +10,7 @@ for (const htmlFile of allHtmls) {
 
 const indexTemplate = await Bun.file("generators/index.html.template").text();
 const workTemplate = await Bun.file("generators/work.html.template").text();
+const readmeTemplate = await Bun.file("generators/README.md.template").text();
 
 const allWorks = globSync("html/*.js")
   .map((file) => file.replace("html/", "").replace(".js", ""))
@@ -27,7 +28,16 @@ const index = indexTemplate.replace(
   "<!--/INSERT/-->",
   allWorks.map((work) => `<li><a href="/${work}">./${work}</a></li>`).join("\n")
 );
-
 await Bun.write("html/index.html", index);
 
-console.log(`index.html generated. ${allWorks.length} works found.`);
+const readme = readmeTemplate.replace(
+  /<!--\/INSERT\/-->/,
+  allWorks
+    .map((work) => `- [./${work}](https://art.mekanoe.com/${work})`)
+    .join("\n")
+);
+await Bun.write("README.md", readme);
+
+console.log(
+  `index.html & README.md generated. ${allWorks.length} works found.`
+);

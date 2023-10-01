@@ -1,8 +1,8 @@
 {
   "name": "noeidelon",
   "type": "module",
+  "main": "./generators/generate.js",
   "scripts": {
-    "start": "bun ./generators/generate.js",
     "serve": "serve ./html"
   },
   "devDependencies": {
