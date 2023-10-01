@@ -18,6 +18,8 @@ https://art.mekanoe.com
 
 `bun serve` to serve them locally
 
+`bun dev` if you're developing the templates for auto-generation.
+
 ### Infrastructure
 
 - The "generator" does

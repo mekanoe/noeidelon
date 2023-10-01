@@ -13,7 +13,8 @@ for (const htmlFile of allHtmls) {
 
 const allWorks = globSync("html/*.js")
   .map((file) => file.replace("html/", "").replace(".js", ""))
-  .filter((work) => work !== "platform");
+  .sort()
+  .reverse();
 
 console.log({ allWorks });
 
@@ -25,13 +26,16 @@ for (const work of allWorks) {
 
 const index = indexTemplate.replace(
   "<!--/INSERT/-->",
-  allWorks.map((work) => `<li><a href="/${work}">./${work}</a></li>`).join("\n")
+  allWorks
+    .map((work) => `<li><a href="/${work}">./${work}</a></li>`)
+    .join("\n      ")
 );
 await Bun.write("html/index.html", index);
 
 const readme = readmeTemplate.replace(
   "<!--/INSERT/-->",
   allWorks
+    .reverse()
     .map((work) => `- [./${work}](https://art.mekanoe.com/${work})`)
     .join("\n")
 );

@@ -9,6 +9,7 @@ https://art.mekanoe.com
 ## Artworks
 
 - [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
+- [./002-rainbow-trinity](https://art.mekanoe.com/002-rainbow-trinity)
 
 ## Development
 
@@ -17,6 +18,8 @@ https://art.mekanoe.com
 `bun run .` to generate HTMLs
 
 `bun serve` to serve them locally
+
+`bun dev` if you're developing the templates for auto-generation.
 
 ### Infrastructure
 
