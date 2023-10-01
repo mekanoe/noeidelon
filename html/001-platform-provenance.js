@@ -51,10 +51,11 @@ const shader = new Shader(app)
       }
 
       void main() {
-        vec3 hsv = rgb2hsv(vec3(vTextureCoord, 1.0));
+        float zComponent = uSinTime * 0.001 * 0.5 + 0.5;
+        vec3 hsv = rgb2hsv(vec3(vTextureCoord, zComponent));
         hsv.x += uTime * 0.0001;
-        hsv.y = vTextureCoord.x;
-        hsv.z = vTextureCoord.y;
+        hsv.y = 1.0;
+        hsv.z = 1.0;
         vec3 rgb = hsv2rgb(hsv);
 
         gl_FragColor = vec4(rgb, 1.0);
