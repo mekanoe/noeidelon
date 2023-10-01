@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>com.mekanoe.art //</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap"
+  rel="stylesheet"
+/>
+<style>
+  html,
+  body {
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    background-color: hsl(32, 19%, 14%);
+    color: hsl(39, 75%, 51%);
+    line-height: 1.5;
+    text-shadow: 1px 1px 3px hsl(38, 45%, 22%);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  li {
+    &:hover {
+      color: hsl(39, 100%, 80%);
+      & a {
+        text-decoration: underline;
+      }
+    }
+
+    &::before {
+      content: "▸";
+      margin-right: 0.5rem;
+    }
+  }
+</style>
+<link rel="stylesheet" href="index.css" />
+<main>
+  <header>
+    <div>com.mekanoe.art //</div>
+    <div class="subtext">a collection of 3D works</div>
+  </header>
+  <section id="works">
+    <ul>
+      <li><a href="/001-platform-provenance">./001-platform-provenance</a></li>
+    </ul>
+  </section>
+</main>
