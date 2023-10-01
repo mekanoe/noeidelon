@@ -1,6 +1,6 @@
-import { main } from "./platform.js";
-import { Shader } from "./shader.js";
-import { BasicPlane } from "./basic-plane.js";
+import { main } from "./lib/platform.js";
+import { Shader } from "./lib/shader.js";
+import { BasicPlane } from "./lib/basic-plane.js";
 
 main((gl, core) => {
   const shader = new Shader(gl)
