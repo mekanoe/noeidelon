@@ -6,6 +6,10 @@ Foxes dream of electron beams.
 
 https://art.mekanoe.com
 
+## Artworks
+
+- [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
+
 ## Development
 
 `nix` to install bun... or do it globally.
@@ -14,11 +18,7 @@ https://art.mekanoe.com
 
 `bun serve` to serve them locally
 
-## Artworks
-
-- [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
-
-## Infrastructure
+### Infrastructure
 
 - The "generator" does
 
