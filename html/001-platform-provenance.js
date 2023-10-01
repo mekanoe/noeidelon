@@ -32,8 +32,10 @@ main((gl, core) => {
 
       void main() {
         lowp float slowedSinTime = sin(uTime*0.001)*0.5+0.5;
+        lowp float slowedCosTime = cos(uTime*0.005)*0.5+0.5;
         
-        gl_FragColor = vec4(vTextureCoord, slowedSinTime, 1.0);
+        gl_FragColor = vec4(vTextureCoord.x * 0.5 - slowedSinTime, vTextureCoord.y, vTextureCoord.y * 0.5 + slowedSinTime, 1.0);
+        gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
       }
     `
     )
