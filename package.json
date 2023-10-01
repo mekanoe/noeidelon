@@ -3,13 +3,18 @@
   "type": "module",
   "main": "./generators/generate.js",
   "scripts": {
-    "serve": "serve ./html"
+    "build": "bun ./generators/generate.ts",
+    "build:watch": "bun run build --watch",
+    "serve": "serve ./html",
+    "dev": "run-p serve build:watch"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "bun-types": "latest",
+    "npm-run-all2": "^6.0.6",
+    "prettier": "^3.0.3"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "glob": "^10.3.10",

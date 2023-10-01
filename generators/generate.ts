@@ -1,5 +1,8 @@
-import { unlinkSync } from "fs";
+import { unlinkSync } from "node:fs";
 import { globSync } from "glob";
+import indexTemplate from "./index.html.txt";
+import workTemplate from "./work.html.txt";
+import readmeTemplate from "./README.md.txt";
 
 const allHtmls = globSync("html/*.html").filter(
   (file) => file !== "html/index.html"
@@ -7,10 +10,6 @@ const allHtmls = globSync("html/*.html").filter(
 for (const htmlFile of allHtmls) {
   unlinkSync(htmlFile);
 }
-
-const indexTemplate = await Bun.file("generators/index.html.template").text();
-const workTemplate = await Bun.file("generators/work.html.template").text();
-const readmeTemplate = await Bun.file("generators/README.md.template").text();
 
 const allWorks = globSync("html/*.js")
   .map((file) => file.replace("html/", "").replace(".js", ""))
@@ -31,7 +30,7 @@ const index = indexTemplate.replace(
 await Bun.write("html/index.html", index);
 
 const readme = readmeTemplate.replace(
-  /<!--\/INSERT\/-->/,
+  "<!--/INSERT/-->",
   allWorks
     .map((work) => `- [./${work}](https://art.mekanoe.com/${work})`)
     .join("\n")

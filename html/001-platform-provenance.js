@@ -1,12 +1,14 @@
-import { main } from "./lib/platform.js";
 import { Shader } from "./lib/shader.js";
 import { BasicPlane } from "./lib/basic-plane.js";
+import { App } from "./lib/app.js";
 
-main({ fov: 20 }, (gl, core) => {
-  const shader = new Shader(gl, core)
-    .attach(
-      gl.VERTEX_SHADER,
-      `
+const app = new App({ fov: 20 });
+const gl = app.gl;
+
+const shader = new Shader(app)
+  .attach(
+    gl.VERTEX_SHADER,
+    `
       attribute vec4 aVertexPosition;
       attribute vec2 aTextureCoord;
       
@@ -20,10 +22,10 @@ main({ fov: 20 }, (gl, core) => {
         vTextureCoord = aTextureCoord;
       }
     `
-    )
-    .attach(
-      gl.FRAGMENT_SHADER,
-      `
+  )
+  .attach(
+    gl.FRAGMENT_SHADER,
+    `
       uniform lowp float uTime;
       uniform lowp float uSinTime;
       uniform lowp float uCosTime;
@@ -38,22 +40,10 @@ main({ fov: 20 }, (gl, core) => {
         gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
       }
     `
-    )
-    .link();
+  )
+  .link();
 
-  const plane = new BasicPlane(gl, core);
-  plane.attachShader(shader);
+const plane = new BasicPlane(app);
+plane.attachShader(shader);
 
-  const render = () => {
-    core.clear();
-    plane.draw2D();
-
-    if (gl.getError() !== gl.NO_ERROR) {
-      throw new Error("WebGL error");
-    }
-
-    requestAnimationFrame(render);
-  };
-
-  requestAnimationFrame(render);
-});
+app.loop();

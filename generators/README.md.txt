@@ -16,7 +16,7 @@ https://art.mekanoe.com
 
 ## Artworks
 
-- [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
+<!--/INSERT/-->
 
 ## Infrastructure
 
