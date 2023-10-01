@@ -4,6 +4,7 @@ export class App {
       fov: 45,
     }
   ) {
+    this._now = 0;
     this.registry = {
       onStart: [],
       onUpdate: [],
@@ -77,16 +78,22 @@ export class App {
   }
 
   start() {
-    this.registry.onStart.forEach((fn) => fn(this.gl, this));
+    this.registry.onStart.forEach((fn) => fn(this));
   }
 
   update() {
-    this.registry.onBeforeUpdate.forEach((fn) => fn(this.gl, this));
-    this.registry.onUpdate.forEach((fn) => fn(this.gl, this));
+    this.registry.onBeforeUpdate.forEach((fn) => fn(this));
+    this.registry.onUpdate.forEach((fn) => fn(this));
   }
 
-  loop() {
+  loop(now) {
+    this._now = now;
     this.update();
-    requestAnimationFrame(() => this.loop());
+
+    requestAnimationFrame((newNow) => this.loop(newNow));
+  }
+
+  now() {
+    return this._now;
   }
 }

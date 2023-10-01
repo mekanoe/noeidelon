@@ -3,7 +3,6 @@ export class Shader {
     this.gl = app.gl;
     this.app = app;
     this.program = this.gl.createProgram();
-    this.startTime = Date.now();
   }
 
   attach(type, source) {
@@ -49,8 +48,7 @@ export class Shader {
   }
 
   updateTime() {
-    const now = Date.now();
-    const time = now - this.startTime;
+    const time = this.app.now();
     const sinTime = Math.sin(time);
     const cosTime = Math.cos(time);
     this.gl.uniform1f(this.location("uTime"), time);
