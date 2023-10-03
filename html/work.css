@@ -1,0 +1,12 @@
+#telemetry {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font: monospace;
+    z-index: 100;
+    padding: 10px;
+    font-size: 12px;
+    display: none;
+}

@@ -1,6 +1,6 @@
-import indexTemplate from "./generators/index.html.txt";
-import workTemplate from "./generators/work.html.txt";
-import readmeTemplate from "./generators/README.md.txt";
+import indexTemplate from "./templates/index.html.txt";
+import workTemplate from "./templates/work.html.txt";
+import readmeTemplate from "./templates/README.md.txt";
 import chalk from "chalk";
 
 export const generate = async (works: string[]) => {
