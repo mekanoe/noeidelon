@@ -16,6 +16,11 @@ await Bun.build({
   entrypoints: works,
   outdir: "html",
   splitting: true,
+  loader: {
+    ".glsl": "text",
+    ".wgsl": "text",
+  },
+  minify: true,
 });
 
 console.log(chalk.green`>> Generating HTML and Markdown ...`);
