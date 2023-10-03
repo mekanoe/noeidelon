@@ -111,9 +111,7 @@ export class App {
       requestAnimationFrame(run);
     };
 
-    requestAnimationFrame((now) => {
-      run(now);
-    });
+    requestAnimationFrame(run);
   }
 
   now() {

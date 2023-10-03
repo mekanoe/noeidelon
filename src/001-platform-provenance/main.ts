@@ -1,6 +1,6 @@
-import { Shader } from "./lib/shader.js";
-import { BasicPlane } from "./lib/basic-plane.js";
-import { App } from "./lib/app.js";
+import { Shader } from "../shader";
+import { BasicPlane } from "../basic-plane";
+import { App } from "../app";
 
 const app = new App({ fov: 20 });
 const gl = app.gl;

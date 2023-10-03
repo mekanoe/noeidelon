@@ -28,4 +28,4 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 ></script>
-<script src="/##name##.js" type="module"></script>
+<script src="/##name##/main.js" type="module"></script>

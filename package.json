@@ -1,9 +1,9 @@
 {
   "name": "noeidelon",
   "type": "module",
-  "main": "./generators/generate.js",
+  "main": "./build.ts",
   "scripts": {
-    "build": "bun $BUNFLAGS ./generators/generate.ts",
+    "build": "bun $BUNFLAGS .",
     "build:watch": "BUNFLAGS=--watch bun run build",
     "serve": "serve ./html",
     "dev": "run-p serve build:watch"
@@ -17,6 +17,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "chalk": "^5.3.0",
     "glob": "^10.3.10",
     "serve": "^14.2.1"
   }
