@@ -17,7 +17,7 @@
     height: 100vh;
   }
 </style>
-<link rel="stylesheet" href="work.css" />
+<link rel="stylesheet" href="/work.css" />
 <main>
   <canvas id="canvas" width="1280" height="720"></canvas>
   <div id="telemetry">XX.X FPS (XX.X ms)</div>
