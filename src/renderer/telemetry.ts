@@ -1,16 +1,19 @@
+import { WebGPUApp } from "./webgpu";
+
 export class Telemetry {
   public el: HTMLElement;
   public frameTimes: number[] = [];
   public maxFrameTimes: number = 100;
   public lastFrameTime: number = 0;
   constructor(
-    public app: any,
+    public app: WebGPUApp,
     selector = "#telemetry"
   ) {
     this.el = document.querySelector(selector) as HTMLElement;
     if (this.el && location.search.includes("telemetry")) {
       this.el.style.display = "block";
-      this.app.onAfterUpdate(() => this.onAfterUpdate());
+      this.app.onAfterUpdate((time) => this.onAfterUpdate(time));
+      this.app.onStart(() => this.onStart());
     }
   }
 
@@ -22,8 +25,13 @@ export class Telemetry {
     }
   }
 
-  onAfterUpdate() {
-    const frameTime = this.app.now() - this.lastFrameTime;
+  onStart() {
+    this.lastFrameTime = 0;
+    this.frameTimes = [];
+  }
+
+  onAfterUpdate(time: number) {
+    const frameTime = time - this.lastFrameTime;
     this.insertTime(frameTime);
 
     const averageFrameTime =
@@ -40,6 +48,6 @@ export class Telemetry {
       } | aU: ${this.app.registry.onAfterUpdate.length}
     `;
 
-    this.lastFrameTime = this.app.now();
+    this.lastFrameTime = time;
   }
 }

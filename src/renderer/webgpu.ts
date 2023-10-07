@@ -5,12 +5,26 @@ export type WebGPUAppConfig = {
   context?: GPUCanvasConfiguration;
 };
 
+export type RenderHandle = (time: number, app: WebGPUApp) => void;
+
 export class WebGPUApp {
   public canvas: HTMLCanvasElement;
   private _adapter?: GPUAdapter;
   private _device?: GPUDevice;
   private _context?: GPUCanvasContext;
   public telemetry: Telemetry;
+
+  public registry: {
+    onBeforeUpdate: RenderHandle[];
+    onAfterUpdate: RenderHandle[];
+    onUpdate: RenderHandle[];
+    onStart: RenderHandle[];
+  } = {
+    onBeforeUpdate: [],
+    onAfterUpdate: [],
+    onUpdate: [],
+    onStart: [],
+  };
 
   constructor(public config: WebGPUAppConfig = {}) {
     this.config = {
@@ -82,5 +96,46 @@ export class WebGPUApp {
     }
 
     return this._device;
+  }
+
+  onBeforeUpdate(handle: RenderHandle) {
+    this.registry.onBeforeUpdate.push(handle);
+  }
+
+  onAfterUpdate(handle: RenderHandle) {
+    this.registry.onAfterUpdate.push(handle);
+  }
+
+  onUpdate(handle: RenderHandle) {
+    this.registry.onUpdate.push(handle);
+  }
+
+  onStart(handle: RenderHandle) {
+    this.registry.onStart.push(handle);
+  }
+
+  doUpdate(time: number) {
+    this.registry.onBeforeUpdate.forEach((handle) => handle(time, this));
+    this.registry.onUpdate.forEach((handle) => handle(time, this));
+    this.registry.onAfterUpdate.forEach((handle) => handle(time, this));
+  }
+
+  doStart(time: number = 0) {
+    this.registry.onStart.forEach((handle) => handle(this, time));
+  }
+
+  async oneShot(time: number = 0) {
+    this.doStart(time);
+    this.doUpdate(time);
+  }
+
+  start() {
+    this.doStart();
+
+    const run = (time: number) => {
+      this.doUpdate(time);
+      requestAnimationFrame(run);
+    };
+    requestAnimationFrame(run);
   }
 }
