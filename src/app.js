@@ -1,4 +1,4 @@
-import { Telemetry } from "./telemetry.js";
+import { Telemetry } from "./renderer/telemetry";
 
 export class App {
   constructor(

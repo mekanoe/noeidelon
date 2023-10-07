@@ -31,5 +31,5 @@ const publics = globSync("src/public/*");
 for (const file of publics) {
   const dest = file.replace("src/public/", "html/");
   cpSync(file, dest);
-  console.log(chalk.yellow(`  -> html/${dest}...`));
+  console.log(chalk.yellow(`  -> ${dest}...`));
 }

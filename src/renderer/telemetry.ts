@@ -1,18 +1,20 @@
 export class Telemetry {
-  constructor(app, selector = "#telemetry") {
-    this.app = app;
-    this.el = document.querySelector(selector);
+  public el: HTMLElement;
+  public frameTimes: number[] = [];
+  public maxFrameTimes: number = 100;
+  public lastFrameTime: number = 0;
+  constructor(
+    public app: any,
+    selector = "#telemetry"
+  ) {
+    this.el = document.querySelector(selector) as HTMLElement;
     if (this.el && location.search.includes("telemetry")) {
       this.el.style.display = "block";
       this.app.onAfterUpdate(() => this.onAfterUpdate());
     }
-
-    this.frameTimes = [];
-    this.maxFrameTimes = 100;
-    this.lastFrameTime = 0;
   }
 
-  insertTime(time) {
+  insertTime(time: number) {
     this.frameTimes.push(time);
 
     if (this.frameTimes.length > this.maxFrameTimes) {

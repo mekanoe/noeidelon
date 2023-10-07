@@ -2,6 +2,7 @@ import indexTemplate from "./templates/index.html.txt";
 import workTemplate from "./templates/work.html.txt";
 import readmeTemplate from "./templates/README.md.txt";
 import chalk from "chalk";
+import { mkdirSync } from "node:fs";
 
 export const generate = async (works: string[]) => {
   const allWorks = works
@@ -12,6 +13,7 @@ export const generate = async (works: string[]) => {
   for (const work of allWorks) {
     const html = `${workTemplate}`.replace(/##name##/g, work);
 
+    mkdirSync(`html/${work}`, { recursive: true });
     await Bun.write(`html/${work}/index.html`, html);
     console.log(chalk.yellow(`  -> html/${work}/index.html...`));
   }
