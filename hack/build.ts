@@ -3,6 +3,7 @@ import { generate } from "./generate";
 import { globSync } from "glob";
 import { rmSync, mkdirSync, cpSync } from "node:fs";
 import { convertMeshes } from "./convert-meshes";
+import glslPlugin from "./glsl-plugin";
 
 console.log(chalk.green`>> Cleaing up ./html ...`);
 rmSync("html", { recursive: true, force: true });
@@ -22,6 +23,7 @@ await Bun.build({
     ".wgsl": "text",
   },
   minify: true,
+  plugins: [glslPlugin],
 });
 
 console.log(chalk.green`>> Generating HTML and Markdown ...`);

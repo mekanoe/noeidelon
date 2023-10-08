@@ -1,7 +1,7 @@
 {
   "name": "noeidelon",
   "type": "module",
-  "main": "./build.ts",
+  "main": "./hack/build.ts",
   "scripts": {
     "build": "bun $BUNFLAGS .",
     "build:watch": "BUNFLAGS=--watch bun run build",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "esbuild-plugin-glsl": "^1.2.2",
     "glob": "^10.3.10",
     "serve": "^14.2.1",
     "typescript": "^5.2.2"
