@@ -121,7 +121,7 @@ export class WebGPUApp {
   }
 
   doStart(time: number = 0) {
-    this.registry.onStart.forEach((handle) => handle(this, time));
+    this.registry.onStart.forEach((handle) => handle(time, this));
   }
 
   async oneShot(time: number = 0) {

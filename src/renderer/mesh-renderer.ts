@@ -16,9 +16,11 @@ export class MeshRenderer extends Behavior {
   ) {
     super(app);
   }
-  onStart() {
+
+  override onStart() {
     console.log("hello from meshrenderer!");
     console.log(`i've got a ${this.mesh.constructor.name}`);
   }
-  onUpdate(time: number) {}
+
+  override onUpdate(time: number) {}
 }

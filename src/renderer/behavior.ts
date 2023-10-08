@@ -1,15 +1,14 @@
 import { WebGPUApp } from "./webgpu";
 
 export abstract class Behavior {
+  onStart?(...args: any[]): void;
+  onBeforeUpdate?(...args: any[]): void;
+  onUpdate?(...args: any[]): void;
+  onAfterUpdate?(...args: any[]): void;
   constructor(public app: WebGPUApp) {
-    this.onBeforeUpdate && app.onBeforeUpdate(this.onBeforeUpdate.bind(this));
+    this.onStart && app.onStart(this.onStart.bind(this));
     this.onUpdate && app.onUpdate(this.onUpdate.bind(this));
     this.onAfterUpdate && app.onAfterUpdate(this.onAfterUpdate.bind(this));
-    this.onStart && app.onStart(this.onStart.bind(this));
+    this.onBeforeUpdate && app.onBeforeUpdate(this.onBeforeUpdate.bind(this));
   }
-
-  onStart(time: number) {}
-  onBeforeUpdate(time: number) {}
-  onUpdate(time: number) {}
-  onAfterUpdate(time: number) {}
 }

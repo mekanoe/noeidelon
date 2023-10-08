@@ -1,5 +1,0 @@
-class n{U;constructor(U){this.app=U;this.onBeforeUpdate&&U.onBeforeUpdate(this.onBeforeUpdate.bind(this)),this.onUpdate&&U.onUpdate(this.onUpdate.bind(this)),this.onAfterUpdate&&U.onAfterUpdate(this.onAfterUpdate.bind(this)),this.onStart&&U.onStart(this.onStart.bind(this))}onStart(U){}onBeforeUpdate(U){}onUpdate(U){}onAfterUpdate(U){}}class k extends n{U;el;frameTimes=[];maxFrameTimes=100;lastFrameTime=0;constructor(U,h="#telemetry"){super(U);this.app=U;if(this.el=document.querySelector(h),this.el&&location.search.includes("telemetry"))this.el.style.display="block"}insertTime(U){if(this.frameTimes.push(U),this.frameTimes.length>this.maxFrameTimes)this.frameTimes.shift()}onStart(){this.lastFrameTime=0,this.frameTimes=[],setInterval(()=>{const U=this.frameTimes.reduce((L,j)=>L+j,0)/this.frameTimes.length,h=1000/U;this.el.innerHTML=`
-      ${h.toFixed(1)} FPS (${U.toFixed(3)} ms)<br />
-      bU: ${this.app.registry.onBeforeUpdate.length} | U: ${this.app.registry.onUpdate.length} | aU: ${this.app.registry.onAfterUpdate.length}
-    `},1000)}onAfterUpdate(U){const h=U-this.lastFrameTime;this.insertTime(h),this.lastFrameTime=U}}
-export{n as a,k as b};
