@@ -1,6 +1,6 @@
-import { Shader } from "../shader";
-import { BasicPlane } from "../basic-plane";
-import { App } from "../app";
+import { Shader } from "./shader";
+import { BasicPlane } from "./basic-plane";
+import { App } from "./app";
 import fragment from "./fragment.glsl";
 import vertex from "./vertex.glsl";
 
