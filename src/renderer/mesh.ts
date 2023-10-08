@@ -9,14 +9,7 @@ export type MeshConfig = {
 };
 
 export class Mesh {
-  private _shader: Shader = Oops;
-
   constructor(public config: MeshConfig) {}
-
-  shader(shader: Shader) {
-    this._shader = shader;
-    return this;
-  }
 
   buffer(app: WebGPUApp) {
     const buffer = app.device.createBuffer({
@@ -30,8 +23,8 @@ export class Mesh {
     return buffer;
   }
 
-  pipeline(app: WebGPUApp, config: Record<string, any>) {
-    const module = this._shader.module(app);
+  pipeline(app: WebGPUApp, shader: Shader, config: Record<string, any>) {
+    const module = shader.module(app);
     return app.device.createRenderPipeline({
       layout: "auto",
       vertex: {
