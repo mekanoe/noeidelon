@@ -11,7 +11,7 @@ struct v2f {
 }
 
 @vertex
-fn vertex_main(
+fn main(
   @builtin(position) position : vec4f,
   @location(0) uv : vec2f,
 ) -> v2f {
@@ -19,7 +19,7 @@ fn vertex_main(
 }
 
 @fragment
-fn fragment_main(
+fn main(
   @location(0) uv : vec2f,
 ) -> @location(0) vec4f {
   f32 zComponent = sin(uniforms.time) * 0.001 * 0.5 + 0.5;

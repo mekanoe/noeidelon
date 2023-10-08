@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { generate } from "./generate";
 import { globSync } from "glob";
 import { rmSync, mkdirSync, cpSync } from "node:fs";
+import { convertMeshes } from "./convert-meshes";
 
 console.log(chalk.green`>> Cleaing up ./html ...`);
 rmSync("html", { recursive: true, force: true });
@@ -33,3 +34,6 @@ for (const file of publics) {
   cpSync(file, dest);
   console.log(chalk.yellow(`  -> ${dest}...`));
 }
+
+console.log(chalk.green`>> Convert meshes ...`);
+await convertMeshes();
