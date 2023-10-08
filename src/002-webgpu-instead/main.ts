@@ -6,6 +6,7 @@ import { Shader } from "../renderer/shader";
 
 const app = new WebGPUApp({ fov: 20 });
 
-const renderer = new MeshRenderer(app, plane);
 const shader = new Shader(rainbowPlane);
+const renderer = new MeshRenderer(app, plane, shader);
+
 app.start();

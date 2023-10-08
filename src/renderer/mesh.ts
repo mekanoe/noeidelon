@@ -6,6 +6,7 @@ export type MeshConfig = {
   positionSize: number;
   colorSize: number;
   uvSize: number;
+  vertexCount: number;
 };
 
 export class Mesh {

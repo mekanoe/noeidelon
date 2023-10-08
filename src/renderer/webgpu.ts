@@ -12,7 +12,9 @@ export class WebGPUApp {
   private _adapter?: GPUAdapter;
   private _device?: GPUDevice;
   private _context?: GPUCanvasContext;
-  public telemetry: Telemetry;
+  public telemetry?: Telemetry;
+  private jobsToSubmitThisFrame: GPUCommandBuffer[] = [];
+  private renderOK = false;
 
   public registry: {
     onBeforeUpdate: RenderHandle[];
@@ -34,7 +36,10 @@ export class WebGPUApp {
     this.canvas = document.querySelector("canvas") as HTMLCanvasElement;
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    this.telemetry = new Telemetry(this);
+
+    if (location.search.includes("telemetry")) {
+      this.telemetry = new Telemetry(this);
+    }
 
     this.init().catch((e) => {
       const main = document.querySelector("main");
@@ -71,6 +76,23 @@ export class WebGPUApp {
       format: "bgra8unorm",
       alphaMode: "premultiplied",
       ...this.config.context,
+    });
+
+    this.renderOK = true;
+  }
+
+  awaitRendererReady(timeout: number = 5000) {
+    const start = Date.now();
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        if (this.renderOK) {
+          return resolve(true);
+        }
+
+        if (Date.now() - start > timeout) {
+          return reject(`Renderer was not OK within ${timeout}ms`);
+        }
+      }, 10);
     });
   }
 
@@ -115,9 +137,15 @@ export class WebGPUApp {
   }
 
   doUpdate(time: number) {
+    this.jobsToSubmitThisFrame = [];
+
     this.registry.onBeforeUpdate.forEach((handle) => handle(time, this));
     this.registry.onUpdate.forEach((handle) => handle(time, this));
     this.registry.onAfterUpdate.forEach((handle) => handle(time, this));
+
+    if (this.jobsToSubmitThisFrame.length !== 0) {
+      this.device.queue.submit(this.jobsToSubmitThisFrame);
+    }
   }
 
   doStart(time: number = 0) {
@@ -125,11 +153,15 @@ export class WebGPUApp {
   }
 
   async oneShot(time: number = 0) {
+    await this.awaitRendererReady();
+
     this.doStart(time);
     this.doUpdate(time);
   }
 
-  start() {
+  async start() {
+    await this.awaitRendererReady();
+
     this.doStart();
 
     const run = (time: number) => {
@@ -137,5 +169,9 @@ export class WebGPUApp {
       requestAnimationFrame(run);
     };
     requestAnimationFrame(run);
+  }
+
+  commit(commandEncoder: GPUCommandBuffer) {
+    this.jobsToSubmitThisFrame.push(commandEncoder);
   }
 }

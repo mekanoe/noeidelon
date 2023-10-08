@@ -22,6 +22,7 @@
     "esbuild-plugin-glsl": "^1.2.2",
     "glob": "^10.3.10",
     "serve": "^14.2.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "wgpu-matrix": "^2.5.0"
   }
 }
