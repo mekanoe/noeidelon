@@ -10,6 +10,7 @@ https://art.mekanoe.com
 
 - [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
 - [./002-webgl-engine](https://art.mekanoe.com/002-webgl-engine)
+- [./003-scene](https://art.mekanoe.com/003-scene)
 
 ## Development
 
