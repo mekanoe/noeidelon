@@ -42,7 +42,7 @@ export class Telemetry extends Behavior {
       } | U: ${this.app.registry.onUpdate.length} | aU: ${
         this.app.registry.onAfterUpdate.length
       }`;
-    }, 1000);
+    }, 1001);
   }
 
   onAfterUpdate(time: number) {

@@ -39,12 +39,11 @@ console.log(chalk.green`>> Generating HTML and Markdown ...`);
 await generate(works);
 
 console.log(chalk.green`>> Copying public files ...`);
-const publics = globSync("src/public/*");
-for (const file of publics) {
-  const dest = file.replace("src/public/", "html/");
-  cpSync(file, dest);
-  console.log(chalk.yellow(`  -> ${dest}...`));
-}
+const { stdout, stderr, exitCode } = Bun.spawnSync([
+  "sh",
+  "-c",
+  "cp -r src/public/* html/",
+]);
 
 console.log(chalk.green`>> Convert meshes ...`);
 await convertMeshes();

@@ -1,3 +1,4 @@
+// This one is archived.
 import { MeshRenderer } from "../renderer/mesh-renderer";
 import plane from "../meshes/plane";
 import { WebGLApp } from "../renderer/webgl";
@@ -14,21 +15,19 @@ const camera = new Transform(
   quat.fromEuler(quat.create(), 15, 0, 0)
 );
 
-(window as any).ANGLE_X = 15;
-(window as any).ANGLE_Y = 0;
-(window as any).ANGLE_Z = 0;
+const modelTransform = new Transform([0, 0, 4]);
 
 app.onUpdate((time: number) => {
-  const stride = 2;
-  const x = Math.sin(time * 0.0001) * (stride * 2 - stride * 0.5);
-  // const y = Math.tan(time * 0.001) * (stride * 2 - stride * 0.5);
+  const cameraStride = 3;
+  const x = Math.sin(time * 0.0001) * (cameraStride * 2 - cameraStride * 0.5);
 
   camera.rotation = quat.fromEuler(quat.create(), x, 0, 0);
+  // modelTransform.rotation = quat.fromEuler(quat.create(), x, 0, 0);
 });
 
 new Renderable(
   app,
-  new Transform([0, 0, 4]),
+  modelTransform,
   new MeshRenderer(app, torus, uvRainbow(app), camera, {
     drawMode: app.gl.TRIANGLE_FAN,
   })
