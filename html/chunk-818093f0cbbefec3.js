@@ -1,5 +1,0 @@
-class L{d;constructor(d){this.app=d;this.onStart&&d.onStart(this.onStart.bind(this)),this.onUpdate&&d.onUpdate(this.onUpdate.bind(this)),this.onAfterUpdate&&d.onAfterUpdate(this.onAfterUpdate.bind(this)),this.onBeforeUpdate&&d.onBeforeUpdate(this.onBeforeUpdate.bind(this))}}class h extends L{d;el;frameTimes=[];maxFrameTimes=100;lastFrameTime=0;constructor(d,n="#telemetry"){super(d);this.app=d;if(this.el=document.querySelector(n),this.el&&location.search.includes("telemetry"))this.el.style.display="block"}insertTime(d){if(this.frameTimes.push(d),this.frameTimes.length>this.maxFrameTimes)this.frameTimes.shift()}onStart(){this.lastFrameTime=0,this.frameTimes=[],setInterval(()=>{const d=this.frameTimes.reduce((U,c)=>U+c,0)/this.frameTimes.length,n=1000/d;this.el.innerHTML=`
-      ${n.toFixed(1)} FPS (${d.toFixed(3)} ms)<br />
-      bU: ${this.app.registry.onBeforeUpdate.length} | U: ${this.app.registry.onUpdate.length} | aU: ${this.app.registry.onAfterUpdate.length}
-    `},1000)}onAfterUpdate(d){const n=d-this.lastFrameTime;this.insertTime(n),this.lastFrameTime=d}}
-export{L as a,h as b};

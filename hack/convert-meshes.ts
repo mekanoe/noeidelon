@@ -9,6 +9,16 @@ export const convertMeshes = async () => {
 
     const [header, body] = ply.split("end_header");
     const colorSize = header.includes("red") ? 4 : 0;
+    const headerLines = header.split("\n");
+    const vertexCount = Number(
+      headerLines
+        .find((header) => header.startsWith("element vertex"))
+        ?.replace("element vertex ", "")
+    );
+
+    if (!vertexCount) {
+      throw new Error("couldn't get vertex count...");
+    }
 
     const values: number[] = [];
 
@@ -43,13 +53,16 @@ export const convertMeshes = async () => {
 import { Mesh } from "../renderer/mesh";
 
 // prettier-ignore
-const mesh = new Float32Array(${JSON.stringify(values, null, 2)});
+const mesh = new Float32Array(${JSON.stringify(values)});
 
 export default new Mesh({ 
   mesh, 
-  positionSize: 4 * 4, 
-  colorSize: ${colorSize} * 4, 
-  uvSize: 2 * 4,
+  positionSize: 4, 
+  colorSize: ${colorSize}, 
+  uvSize: 2,
+  vertexCount: ${vertexCount},
+  stride: ${4 + colorSize + 2},
+  name: ${JSON.stringify(file)}
 });
 `;
 

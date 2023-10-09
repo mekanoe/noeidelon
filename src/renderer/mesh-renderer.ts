@@ -1,146 +1,136 @@
-import { Mat4, mat4, vec3 } from "wgpu-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { Behavior } from "./behavior";
 import { Mesh } from "./mesh";
 import { Shader } from "./shader";
-import { WebGPUApp } from "./webgpu";
+import { WebGLApp } from "./webgl";
+import { Transform } from "./transform";
+import { errorShader } from "../common-shaders/error";
+
+export type MeshRendererConfig = {
+  drawMode?: number;
+};
 
 export class MeshRenderer extends Behavior {
-  private depthTexture?: GPUTexture;
-  private uniformBuffer?: GPUBuffer;
-  private vertexBuffer?: GPUBuffer;
-  private texture?: GPUTexture;
-  private sampler?: GPUSampler;
-  private uniformBindGroup?: GPUBindGroup;
-  private renderPassDescriptor?: GPURenderPassDescriptor;
-  private pipeline?: GPURenderPipeline;
-  private viewMatrix = mat4.translate(
-    mat4.identity(),
-    vec3.fromValues(0, 0, -4)
-  );
-  private projectionMatrix = mat4.perspective(
-    2 * Math.PI * 0.2,
-    1920 / 1080,
-    1,
-    100
-  );
+  private modelMatrix = mat4.create();
+  private projectionMatrix = mat4.create();
+  private _meshBuffer?: WebGLBuffer;
 
   constructor(
-    public app: WebGPUApp,
+    public app: WebGLApp,
     public mesh: Mesh,
     public shader: Shader,
-    public textures?: any[]
+    public camera: Transform = new Transform([0, 0, -6]),
+    public config: MeshRendererConfig = {}
   ) {
     super(app);
   }
 
+  get meshBuffer() {
+    if (this._meshBuffer) {
+      return this._meshBuffer;
+    }
+
+    throw new Error("mesh buffer not ready");
+  }
+
+  initializeMeshBuffer() {
+    const gl = this.app.gl;
+    const buffer = gl.createBuffer();
+    if (!buffer) {
+      throw new Error("failed to create mesh buffer");
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, this.mesh.config.mesh, gl.STATIC_DRAW);
+
+    this._meshBuffer = buffer;
+  }
+
+  initializeAttributes() {
+    const gl = this.app.gl;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.meshBuffer);
+
+    const positionLocation = this.shader.attrib("aVertexPosition");
+    if (positionLocation !== -1) {
+      gl.vertexAttribPointer(
+        positionLocation,
+        this.mesh.config.positionSize,
+        gl.FLOAT,
+        false,
+        4 * this.mesh.config.stride,
+        0
+      );
+      gl.enableVertexAttribArray(positionLocation);
+      this.shader.bindAttrib(positionLocation, "aVertexPosition");
+    }
+
+    if (this.mesh.config.colorSize !== 0) {
+      const colorLocation = this.shader.attrib("aVertexColor");
+      if (colorLocation !== -1) {
+        gl.vertexAttribPointer(
+          colorLocation,
+          this.mesh.config.colorSize,
+          gl.FLOAT,
+          false,
+          4 * this.mesh.config.stride,
+          4 * this.mesh.config.positionSize
+        );
+        gl.enableVertexAttribArray(colorLocation);
+        this.shader.bindAttrib(colorLocation, "aVertexColor");
+      }
+    }
+
+    const uvLocation = this.shader.attrib("aTextureCoord");
+    if (uvLocation !== -1) {
+      gl.vertexAttribPointer(
+        uvLocation,
+        this.mesh.config.uvSize,
+        gl.FLOAT,
+        false,
+        4 * this.mesh.config.stride,
+        4 * (this.mesh.config.positionSize + this.mesh.config.colorSize)
+      );
+      gl.enableVertexAttribArray(uvLocation);
+      this.shader.bindAttrib(uvLocation, "aTextureCoord");
+    }
+  }
+
   onStart() {
-    this.projectionMatrix = mat4.perspective(
-      2 * Math.PI * 0.2,
+    mat4.perspective(
+      this.projectionMatrix,
+      this.app.config.fov || 45,
       this.app.canvas.width / this.app.canvas.height,
-      1,
-      100
+      this.app.config.zNear || 0.1,
+      this.app.config.zFar || 100
     );
 
-    this.depthTexture = this.app.device.createTexture({
-      size: [this.app.canvas.width, this.app.canvas.height],
-      format: "depth24plus",
-      usage: GPUTextureUsage.RENDER_ATTACHMENT,
-    });
-
-    // float32x4x4 + float32
-    this.uniformBuffer = this.app.device.createBuffer({
-      size: 4 * 16 + 4,
-      usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-    });
-
-    this.pipeline = this.mesh.pipeline(this.app, this.shader, {});
-
-    this.uniformBindGroup = this.app.device.createBindGroup({
-      layout: this.pipeline.getBindGroupLayout(0),
-      entries: [
-        {
-          binding: 0,
-          resource: {
-            buffer: this.uniformBuffer,
-          },
-        },
-      ],
-    });
-
-    this.renderPassDescriptor = {
-      colorAttachments: [
-        // {
-        //   view: undefined as any, // defined in onUpdate
-        //   clearValue: { r: 1, g: 0, b: 1, a: 1 },
-        //   loadOp: "clear",
-        //   storeOp: "store",
-        // },
-      ],
-      depthStencilAttachment: {
-        view: this.depthTexture.createView(),
-        depthClearValue: 1.0,
-        depthLoadOp: "clear",
-        depthStoreOp: "store",
-      },
-    };
-
-    this.vertexBuffer = this.mesh.buffer(this.app);
+    this.shader.compile();
+    this.initializeMeshBuffer();
+    this.initializeAttributes();
+    this.shader.link();
   }
 
-  private writeUniforms(modelViewProjection: Mat4, time: number) {
-    if (!this.uniformBuffer) {
-      return;
-    }
-
-    const {
-      device: { queue },
-    } = this.app;
-
-    const mvpBuf = modelViewProjection as Float32Array;
-    queue.writeBuffer(
-      this.uniformBuffer,
+  onRenderableUpdate(time: number, transform: Transform) {
+    const gl = this.app.gl;
+    this.shader.use();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.meshBuffer);
+    this.shader.setupUniforms(
+      time,
+      this.projectionMatrix,
+      transform,
+      this.camera
+    );
+    gl.drawArrays(
+      this.config.drawMode ?? gl.TRIANGLE_STRIP,
       0,
-      mvpBuf.buffer,
-      mvpBuf.byteOffset,
-      mvpBuf.length
+      this.mesh.config.vertexCount
     );
 
-    const timeBuf = new Float32Array([time]);
-    queue.writeBuffer(
-      this.uniformBuffer,
-      mvpBuf.length + 1,
-      timeBuf.buffer,
-      timeBuf.byteOffset,
-      timeBuf.byteLength
-    );
-  }
-
-  onUpdate(time: number) {
-    if (
-      !this.renderPassDescriptor ||
-      !this.pipeline ||
-      !this.uniformBindGroup ||
-      !this.vertexBuffer
-    ) {
-      return;
+    const err = gl.getError();
+    if (err !== 0) {
+      console.log({ err });
+      throw new Error(
+        `(MeshRenderer<Mesh#${this.mesh.name}>) webgl failure: ${err}`
+      );
     }
-
-    const mvp = mat4.multiply(this.projectionMatrix, this.viewMatrix);
-    this.writeUniforms(mvp, time);
-
-    const { device } = this.app;
-
-    const commandEncoder = device.createCommandEncoder();
-    const passEncoder = commandEncoder.beginRenderPass(
-      this.renderPassDescriptor
-    );
-
-    passEncoder.setPipeline(this.pipeline);
-    passEncoder.setBindGroup(0, this.uniformBindGroup);
-    passEncoder.setVertexBuffer(0, this.vertexBuffer);
-    passEncoder.draw(this.mesh.config.vertexCount);
-    passEncoder.end();
-
-    this.app.commit(commandEncoder.finish());
   }
 }

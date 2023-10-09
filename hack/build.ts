@@ -13,18 +13,27 @@ const works = globSync("src/*/main.ts");
 
 console.log(chalk.green`>> Building ...`);
 console.log(chalk.yellow(`   Found ${works.length} works.`));
+console.log(chalk.yellow(`   Running Bun.build()`));
 
-await Bun.build({
+const results = await Bun.build({
   entrypoints: works,
   outdir: "html",
   splitting: true,
   loader: {
     ".glsl": "text",
     ".wgsl": "text",
+    ".vert": "text",
+    ".frag": "text",
   },
-  minify: true,
+  minify: process.env.MINIFY === "false" ? false : true,
   plugins: [glslPlugin],
 });
+
+if (!results.success) {
+  console.error(chalk.red("XX Bun.build() Failed."));
+  console.error(chalk.red(JSON.stringify(results.logs, null, 2)));
+  process.exit(1);
+}
 
 console.log(chalk.green`>> Generating HTML and Markdown ...`);
 await generate(works);

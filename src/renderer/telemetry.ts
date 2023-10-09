@@ -1,5 +1,5 @@
 import { Behavior } from "./behavior";
-import { WebGPUApp } from "./webgpu";
+import { WebGLApp } from "./webgl";
 
 export class Telemetry extends Behavior {
   public el: HTMLElement;
@@ -7,7 +7,7 @@ export class Telemetry extends Behavior {
   public maxFrameTimes: number = 100;
   public lastFrameTime: number = 0;
   constructor(
-    public app: WebGPUApp,
+    public app: WebGLApp,
     selector = "#telemetry"
   ) {
     super(app);
@@ -35,14 +35,13 @@ export class Telemetry extends Behavior {
 
       const framesPerSecond = 1000 / averageFrameTime;
 
-      this.el.innerHTML = `
-      ${framesPerSecond.toFixed(1)} FPS (${averageFrameTime.toFixed(
-        3
-      )} ms)<br />
-      bU: ${this.app.registry.onBeforeUpdate.length} | U: ${
-        this.app.registry.onUpdate.length
-      } | aU: ${this.app.registry.onAfterUpdate.length}
-    `;
+      this.el.innerHTML = `${framesPerSecond.toFixed(
+        1
+      )} FPS (${averageFrameTime.toFixed(3)} ms)<br />bU: ${
+        this.app.registry.onBeforeUpdate.length
+      } | U: ${this.app.registry.onUpdate.length} | aU: ${
+        this.app.registry.onAfterUpdate.length
+      }`;
     }, 1000);
   }
 

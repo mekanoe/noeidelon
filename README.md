@@ -9,7 +9,7 @@ https://art.mekanoe.com
 ## Artworks
 
 - [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
-- [./002-webgpu-instead](https://art.mekanoe.com/002-webgpu-instead)
+- [./002-webgl-engine](https://art.mekanoe.com/002-webgl-engine)
 
 ## Development
 

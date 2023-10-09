@@ -11,7 +11,10 @@ const mesh = new Float32Array([
 
 export default new Mesh({
   mesh,
-  positionSize: 4 * 4,
-  colorSize: 4 * 4,
-  uvSize: 2 * 4,
+  positionSize: 4,
+  colorSize: 4,
+  uvSize: 2,
+  vertexCount: 4,
+  stride: 10,
+  name: "plane",
 });

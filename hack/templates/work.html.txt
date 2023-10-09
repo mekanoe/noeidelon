@@ -22,10 +22,4 @@
   <canvas id="canvas" width="1280" height="720"></canvas>
   <div id="telemetry">XX.X FPS (XX.X ms)</div>
 </main>
-<script
-  src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/3.4.2/gl-matrix-min.min.js"
-  integrity="sha512-cR3oS5mKRWD+38vYi1CNJk1DLpi104ovuQBuVv9p7nNxeqzSNiHzlboK2BZQybmpTi1QNnQ5unYajpURcMjeZQ=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-></script>
 <script src="/##name##/main.js" type="module"></script>

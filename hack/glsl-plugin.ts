@@ -1,5 +1,5 @@
 import glsl from "esbuild-plugin-glsl";
 
 export default glsl({
-  minify: true,
+  minify: process.env.MINIFY === "false" ? false : true,
 });
