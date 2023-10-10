@@ -2,8 +2,6 @@
 precision highp float;
 
 uniform float uTime;
-uniform float uSinTime;
-uniform float uCosTime;
 
 in vec2 vTextureCoord;
 out vec4 fragColor;
@@ -25,7 +23,7 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 void main() {
-  float zComponent = uSinTime * 0.001 * 0.5 + 0.5;
+  float zComponent = sin(uTime) * 0.001 * 0.5 + 0.5;
   vec3 hsv = rgb2hsv(vec3(vTextureCoord, zComponent));
   hsv.x += uTime * 0.0001;
   hsv.y = 1.0;
