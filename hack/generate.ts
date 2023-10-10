@@ -11,7 +11,18 @@ export const generate = async (works: string[]) => {
     .reverse();
 
   for (const work of allWorks) {
-    const html = `${workTemplate}`.replace(/##name##/g, work);
+    const workIndex = allWorks.findIndex((w) => w === work);
+    const previous = allWorks[(workIndex as any) + 1] ?? null;
+    const next = allWorks[(workIndex as any) - 1] ?? null;
+
+    let nav = ``;
+    if (previous)
+      nav += `<a class="nav-left" href="/${previous}">⇠ ${previous}</a>`;
+    if (next) nav += `<a class="nav-right" href="/${next}">${next} ⇢</a>`;
+
+    const html = `${workTemplate}`
+      .replace(/##name##/g, work)
+      .replace(/##nav##/g, nav);
 
     mkdirSync(`html/${work}`, { recursive: true });
     await Bun.write(`html/${work}/index.html`, html);

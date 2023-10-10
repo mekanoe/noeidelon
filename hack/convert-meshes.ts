@@ -95,8 +95,6 @@ export const convertMeshes = async () => {
       }
     }
 
-    console.log({ propertyList });
-
     const vertexCount = Number(
       headerLines
         .find((header) => header.startsWith("element vertex"))
