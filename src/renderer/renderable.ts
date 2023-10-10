@@ -12,7 +12,7 @@ export class Renderable extends Behavior {
     super(app);
   }
 
-  onUpdate(time: number) {
+  onDraw(time: number) {
     this.renderer.onRenderableUpdate(time, this.transform);
   }
 }

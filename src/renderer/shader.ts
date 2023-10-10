@@ -68,7 +68,6 @@ export class Shader {
     const gl = this.gl;
     this.attach(gl.FRAGMENT_SHADER, this.fragmentCode);
     this.attach(gl.VERTEX_SHADER, this.vertexCode);
-    this.link();
   }
 
   link() {
@@ -100,6 +99,9 @@ export class Shader {
     model: Transform,
     view: Transform
   ) {
+    const viewMatrix = view.toMat4();
+    mat4.invert(viewMatrix, viewMatrix);
+
     const { gl } = this._app as WebGLApp;
     gl.useProgram(this._program as WebGLProgram);
     gl.uniformMatrix4fv(this.uniform("uProjectionMatrix"), false, projection);

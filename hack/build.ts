@@ -11,6 +11,9 @@ mkdirSync("html");
 
 const works = globSync("src/*/main.ts");
 
+console.log(chalk.green`>> Convert meshes ...`);
+await convertMeshes();
+
 console.log(chalk.green`>> Building ...`);
 console.log(chalk.yellow(`   Found ${works.length} works.`));
 console.log(chalk.yellow(`   Running Bun.build()`));
@@ -44,6 +47,3 @@ const { stdout, stderr, exitCode } = Bun.spawnSync([
   "-c",
   "cp -r src/public/* html/",
 ]);
-
-console.log(chalk.green`>> Convert meshes ...`);
-await convertMeshes();

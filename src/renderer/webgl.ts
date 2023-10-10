@@ -19,11 +19,13 @@ export class WebGLApp {
     onAfterUpdate: RenderHandle[];
     onUpdate: RenderHandle[];
     onStart: RenderHandle[];
+    onDraw: RenderHandle[];
   } = {
     onBeforeUpdate: [],
     onAfterUpdate: [],
     onUpdate: [],
     onStart: [],
+    onDraw: [],
   };
 
   constructor(public config: WebGPUAppConfig = {}) {
@@ -36,7 +38,10 @@ export class WebGLApp {
       if (!context) {
         throw new Error("Canvas was unable to get a webgl2 context");
       }
-      this.gl = context;
+      const gl = (this.gl = context);
+      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+
+      // this.gl.getExtension("OES_element_index_uint"); // default
 
       if (location.search.includes("telemetry")) {
         this.telemetry = new Telemetry(this);
@@ -51,6 +56,10 @@ export class WebGLApp {
         `Unable to initialize WebGL. Your browser or machine may not support it.\n  -> ${e}`
       );
     }
+  }
+
+  get aspect() {
+    return this.canvas.clientWidth / this.canvas.clientHeight;
   }
 
   clear() {
@@ -78,16 +87,16 @@ export class WebGLApp {
     this.registry.onStart.push(handle);
   }
 
-  doUpdate(time: number) {
-    // this.jobsToSubmitThisFrame = [];
+  onDraw(handle: RenderHandle) {
+    this.registry.onDraw.push(handle);
+  }
 
+  doUpdate(time: number) {
     this.registry.onBeforeUpdate.forEach((handle) => handle(time, this));
     this.registry.onUpdate.forEach((handle) => handle(time, this));
     this.registry.onAfterUpdate.forEach((handle) => handle(time, this));
 
-    // if (this.jobsToSubmitThisFrame.length !== 0) {
-    //   this.device.queue.submit(this.jobsToSubmitThisFrame);
-    // }
+    this.registry.onDraw.forEach((handle) => handle(time, this));
   }
 
   doStart(time: number = 0) {
@@ -96,15 +105,11 @@ export class WebGLApp {
   }
 
   async oneShot(time: number = 0) {
-    // await this.awaitRendererReady();
-
     this.doStart(time);
     this.doUpdate(time);
   }
 
   async start() {
-    // await this.awaitRendererReady();
-
     this.doStart();
 
     const run = (time: number) => {
@@ -113,8 +118,4 @@ export class WebGLApp {
     };
     requestAnimationFrame(run);
   }
-
-  // commit(commandEncoder: GPUCommandBuffer) {
-  //   this.jobsToSubmitThisFrame.push(commandEncoder);
-  // }
 }

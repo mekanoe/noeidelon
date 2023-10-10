@@ -1,10 +1,12 @@
+#version 300 es
 precision highp float;
 
 uniform float uTime;
 uniform float uSinTime;
 uniform float uCosTime;
 
-varying highp vec2 vTextureCoord;
+in vec2 vTextureCoord;
+out vec4 fragColor;
 
 vec3 rgb2hsv(vec3 c) {
   vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
@@ -30,6 +32,6 @@ void main() {
   hsv.z = 1.0;
   vec3 rgb = hsv2rgb(hsv);
 
-  gl_FragColor = vec4(rgb, 1.0);
-  gl_FragColor = clamp(gl_FragColor, 0.0, 1.0);
+  fragColor = vec4(rgb, 1.0);
+  fragColor = clamp(fragColor, 0.0, 1.0);
 }

@@ -7,12 +7,19 @@ export class Transform {
     public scale = vec3.fromValues(1, 1, 1)
   ) {}
 
+  rotateEuler(x: number, y: number, z: number) {
+    quat.fromEuler(this.rotation, x, y, z);
+    return this;
+  }
+
   toMat4() {
-    return mat4.fromRotationTranslationScale(
-      mat4.create(),
+    const mat = mat4.create();
+    mat4.fromRotationTranslationScale(
+      mat,
       this.rotation,
       this.position,
       this.scale
     );
+    return mat;
   }
 }

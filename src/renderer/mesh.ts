@@ -1,11 +1,11 @@
 export type MeshConfig = {
-  mesh: Float32Array;
-  positionSize: number;
-  colorSize: number;
-  uvSize: number;
-  vertexCount: number;
-  stride: number;
+  colors: Uint8Array | null;
+  faces: Uint32Array;
   name: string;
+  normals: Float32Array | null;
+  positions: Float32Array;
+  uvs: Float32Array | null;
+  vertexCount: number;
 };
 
 export class Mesh {

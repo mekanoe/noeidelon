@@ -24,19 +24,24 @@ https://art.mekanoe.com
 
 ### Infrastructure
 
-- The "generator" does
+- **Output generation**
 
-  - Generates a work list from .js files within `html`
-  - Creates this README.md file
-  - Creates the index.html file
-  - Creates individual HTML files for each work
+  - Bun renders TypeScript and GLSL to html/
+  - src/public/ is copied to html/
+    - This doubles as an "archival" system to preserve scuffedness
+  - .ply files are converted to JS typed arrays and Mesh objects
+  - .html files (and README.md) are generated from rendered TypeScript main.ts files.
 
-- The platform supplies
-  - Shader types
-  - Primitive objects
-  - A canvas to draw on
-  - WebGL hooks
-  - Helpers, etc
+- **Platform**
+
+  - WebGLApp provides render loop, canvas, and other stuff
+  - Behavior provides automatic registration of WebGLApp events (like Unity MonoBehaviors)
+  - Shader provides GLSL shader tooling
+  - Mesh is a DTO with vertex position, color, UVs, and faces
+  - MeshRenderer sends WebGL instructions for rendering a Mesh object with a Shader object.
+  - Renderable is a container of a Transform and Renderer (like a Unity GameObject)
+  - Transform is a tuplet of a position vec3, rotation quat, and scale vec3; to be used anywhere needed.
+  - Scene is a group of Renderables
 
 ## License
 
