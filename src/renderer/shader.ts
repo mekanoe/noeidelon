@@ -2,15 +2,31 @@ import { mat4, vec3 } from "gl-matrix";
 import { Transform } from "./transform";
 import { WebGLApp } from "./webgl";
 
+/**
+ * Uniform/Attribute locations
+ */
 export type ShaderConfig = {
-  time?: boolean;
+  // Engine rendering features
+  model?: 0; // always zero to ensure we render correctly. This is implied.
+  view?: number;
+  projection?: number;
+  world?: number;
+  light0?: number;
+  light0Color?: number;
+  uv0?: number;
+  normals?: number;
+  vertexColor?: number;
+  time?: number;
+
+  // other reasons (like materials)
+  material?: { [key: string]: number };
 };
 
 export class Shader {
   static VERTEX = 35633;
   static FRAGMENT = 35632;
 
-  constructor(private config: ShaderConfig = {}) {}
+  constructor(private config: ShaderConfig) {}
 
   private vertexCode = "";
   private fragmentCode = "";
