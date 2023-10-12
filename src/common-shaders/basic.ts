@@ -4,16 +4,22 @@ import frag from "./basic.frag";
 import vert from "./basic.vert";
 
 export const basicShaderConfig: ShaderConfig = {
-  model: 0,
-  view: 4,
-  projection: 8,
-  world: 12,
-  light0: 13,
-  light0Color: 17,
-  uv0: 18,
-  normals: 19,
-  vertexColor: 20,
-  time: 21,
+  attributes: {
+    vertex: "a_vertex",
+    uv0: "a_uv0",
+    normal: "a_normal",
+    vertexColor: "a_vertex_color",
+  },
+
+  uniforms: {
+    view: "u_view",
+    projection: "u_projection",
+    objectToWorld: "u_object_to_world",
+    objectToWorldInv: "u_object_to_world_inv",
+    light0: "u_light_0",
+    light0Color: "u_light_0_color",
+    time: "u_time",
+  },
 };
 
 export const basic = (app: WebGLApp) =>

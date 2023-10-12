@@ -5,35 +5,46 @@ import { WebGLApp } from "./webgl";
 /**
  * Uniform/Attribute locations
  */
-export type ShaderConfig = {
-  // Engine rendering features
-  model?: 0; // always zero to ensure we render correctly. This is implied.
-  view?: number;
-  projection?: number;
-  world?: number;
-  light0?: number;
-  light0Color?: number;
-  uv0?: number;
-  normals?: number;
-  vertexColor?: number;
-  time?: number;
+export type ShaderConfig = ShaderMapping<string, string>;
+export type InternalMapping = ShaderMapping<
+  number,
+  WebGLUniformLocation | null
+>;
 
-  // other reasons (like materials)
-  material?: { [key: string]: number };
+export type ShaderMapping<
+  Attr extends number | string,
+  Uniform extends (WebGLUniformLocation | null) | string,
+> = {
+  attributes: {
+    vertex: Attr;
+    uv0: Attr;
+    normal: Attr;
+    vertexColor: Attr;
+    material?: { [key: string]: Attr };
+  };
+
+  uniforms: {
+    view: Uniform;
+    projection: Uniform;
+    objectToWorld: Uniform;
+    objectToWorldInv: Uniform;
+    light0: Uniform;
+    light0Color: Uniform;
+    time: Uniform;
+  };
 };
 
 export class Shader {
   static VERTEX = 35633;
   static FRAGMENT = 35632;
 
-  constructor(private config: ShaderConfig) {
-    config.model = 0;
-  }
+  constructor(public config: ShaderConfig) {}
 
   private vertexCode = "";
   private fragmentCode = "";
   private _app?: WebGLApp;
-  private _program: WebGLProgram | null = null;
+  public program: WebGLProgram | null = null;
+  public mappings: InternalMapping = {} as any;
 
   get gl() {
     const gl = this._app?.gl;
@@ -46,7 +57,7 @@ export class Shader {
 
   app(app: WebGLApp) {
     this._app = app;
-    this._program = app.gl.createProgram();
+    this.program = app.gl.createProgram();
 
     return this;
   }
@@ -62,11 +73,31 @@ export class Shader {
   }
 
   attrib(name: string) {
-    return this.gl.getAttribLocation(this._program as WebGLProgram, name);
+    return this.gl.getAttribLocation(this.program as WebGLProgram, name);
   }
 
   uniform(name: string) {
-    return this.gl.getUniformLocation(this._program as WebGLProgram, name);
+    return this.gl.getUniformLocation(this.program as WebGLProgram, name);
+  }
+
+  generateMappings(config: ShaderConfig): InternalMapping {
+    return {
+      attributes: {
+        normal: this.attrib(config.attributes.normal),
+        uv0: this.attrib(config.attributes.uv0),
+        vertex: this.attrib(config.attributes.vertex),
+        vertexColor: this.attrib(config.attributes.vertexColor),
+      },
+      uniforms: {
+        light0: this.uniform(config.uniforms.light0),
+        light0Color: this.uniform(config.uniforms.light0Color),
+        objectToWorld: this.uniform(config.uniforms.objectToWorld),
+        objectToWorldInv: this.uniform(config.uniforms.objectToWorldInv),
+        projection: this.uniform(config.uniforms.projection),
+        view: this.uniform(config.uniforms.view),
+        time: this.uniform(config.uniforms.time),
+      },
+    };
   }
 
   attach(which: number, source: string) {
@@ -79,7 +110,7 @@ export class Shader {
 
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    gl.attachShader(this._program as WebGLProgram, shader);
+    gl.attachShader(this.program as WebGLProgram, shader);
   }
 
   compile() {
@@ -89,54 +120,31 @@ export class Shader {
   }
 
   link() {
-    this.gl.linkProgram(this._program as WebGLProgram);
+    this.gl.linkProgram(this.program as WebGLProgram);
     if (
       !this.gl.getProgramParameter(
-        this._program as WebGLProgram,
+        this.program as WebGLProgram,
         this.gl.LINK_STATUS
       )
     ) {
       throw new Error(
         "Unable to initialize the shader program: " +
-          this.gl.getProgramInfoLog(this._program as WebGLProgram)
+          this.gl.getProgramInfoLog(this.program as WebGLProgram)
       );
     }
+    this.mappings = this.generateMappings(this.config);
   }
 
   bindAttrib(attribLocation: number, name: string) {
     this.gl.bindAttribLocation(
-      this._program as WebGLProgram,
+      this.program as WebGLProgram,
       attribLocation,
       name
     );
   }
 
-  setupUniforms(
-    time: number,
-    projection: mat4,
-    model: Transform,
-    view: Transform
-  ) {
-    const viewMatrix = view.toMat4();
-    mat4.invert(viewMatrix, viewMatrix);
-
-    const { gl } = this._app as WebGLApp;
-    gl.useProgram(this._program as WebGLProgram);
-    gl.uniformMatrix4fv(this.uniform("uProjectionMatrix"), false, projection);
-
-    if (this.config.time) {
-      gl.uniform1f(this.uniform("uTime"), time);
-    }
-
-    const modelMat = mat4.clone(model.toMat4());
-    mat4.fromQuat(modelMat, view.rotation);
-    mat4.translate(modelMat, modelMat, view.position);
-
-    gl.uniformMatrix4fv(this.uniform("uModelViewMatrix"), false, modelMat);
-  }
-
   use() {
-    this._app?.gl.useProgram(this._program);
+    this._app?.gl.useProgram(this.program);
   }
 }
 

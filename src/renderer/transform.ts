@@ -23,3 +23,8 @@ export class Transform {
     return mat;
   }
 }
+
+export const etoq = (v3: vec3): quat =>
+  quat.fromEuler(quat.create(), v3[0], v3[1], v3[2]);
+
+export const v3 = (v: number): vec3 => [v, v, v];

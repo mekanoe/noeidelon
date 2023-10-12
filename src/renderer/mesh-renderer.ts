@@ -1,13 +1,14 @@
-import { mat4, vec3 } from "gl-matrix";
+import { mat4, quat, vec3 } from "gl-matrix";
 import { Behavior } from "./behavior";
 import { Mesh } from "./mesh";
-import { Shader } from "./shader";
+import { Shader, ShaderMapping } from "./shader";
 import { WebGLApp } from "./webgl";
-import { Transform } from "./transform";
+import { Transform, v3 } from "./transform";
 
 export type MeshRendererConfig = {
   drawMode?: number;
   cullMode?: number;
+  meshTransform?: mat4; // Do not use this for per-frame shit. Just the model pre-transform.
 };
 
 export class MeshRenderer extends Behavior {
@@ -26,6 +27,7 @@ export class MeshRenderer extends Behavior {
     public mesh: Mesh,
     public shader: Shader,
     public camera: Transform = new Transform([0, 0, -6]),
+    public light: Transform = new Transform([100, 100, 0]),
     public config: MeshRendererConfig = {}
   ) {
     super(app);
@@ -56,14 +58,21 @@ export class MeshRenderer extends Behavior {
       this.app.gl.ELEMENT_ARRAY_BUFFER
     );
 
+    const shaderMap = this.shader.mappings;
+
     this.buffers.position = this.makeBuffer(this.mesh.config.positions);
-    this.bindAttrib(this.buffers.position, 0, 3, this.app.gl.FLOAT);
+    this.bindAttrib(
+      this.buffers.position,
+      shaderMap.attributes.vertex,
+      3,
+      this.app.gl.FLOAT
+    );
 
     if (this.mesh.config.normals) {
       this.buffers.normal = this.makeBuffer(this.mesh.config.normals);
       this.bindAttrib(
         this.buffers.normal,
-        "aVertexNormals",
+        shaderMap.attributes.normal,
         3,
         this.app.gl.FLOAT,
         true
@@ -74,7 +83,7 @@ export class MeshRenderer extends Behavior {
       this.buffers.color = this.makeBuffer(this.mesh.config.colors);
       this.bindAttrib(
         this.buffers.color,
-        "aVertexColors",
+        shaderMap.attributes.vertexColor,
         4,
         this.app.gl.UNSIGNED_BYTE
       );
@@ -82,7 +91,12 @@ export class MeshRenderer extends Behavior {
 
     if (this.mesh.config.uvs) {
       this.buffers.uv = this.makeBuffer(this.mesh.config.uvs);
-      this.bindAttrib(this.buffers.uv, 1, 2, this.app.gl.FLOAT);
+      this.bindAttrib(
+        this.buffers.uv,
+        shaderMap.attributes.uv0,
+        2,
+        this.app.gl.FLOAT
+      );
     }
   }
 
@@ -114,6 +128,26 @@ export class MeshRenderer extends Behavior {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 
+  initializeShader(time: number, transform: Transform) {
+    const view = mat4.invert(mat4.create(), this.camera.toMat4());
+
+    const gl = this.app.gl;
+    const { uniforms } = this.shader.mappings;
+    this.shader.use();
+
+    gl.uniform1f(uniforms.time, time);
+    gl.uniform4fv(uniforms.light0Color, [1, 1, 1, 1]);
+    gl.uniformMatrix4fv(uniforms.view, false, view);
+    gl.uniformMatrix4fv(uniforms.projection, false, this.projectionMatrix);
+    gl.uniform3fv(uniforms.light0, this.light.position);
+    gl.uniformMatrix4fv(uniforms.objectToWorld, false, transform.toMat4());
+    gl.uniformMatrix4fv(
+      uniforms.objectToWorldInv,
+      false,
+      mat4.invert(mat4.create(), transform.toMat4())
+    );
+  }
+
   onStart() {
     mat4.perspective(
       this.projectionMatrix,
@@ -124,6 +158,7 @@ export class MeshRenderer extends Behavior {
     );
 
     this.shader.compile();
+    this.shader.link();
     this.initializeBuffers();
     this.shader.link();
   }
@@ -134,14 +169,7 @@ export class MeshRenderer extends Behavior {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.faces || null);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position || null);
 
-    this.shader.use();
-
-    this.shader.setupUniforms(
-      time,
-      this.projectionMatrix,
-      transform,
-      this.camera
-    );
+    this.initializeShader(time, transform);
 
     gl.drawElements(
       this.config.drawMode ?? gl.TRIANGLES,
