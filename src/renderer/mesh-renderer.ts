@@ -12,9 +12,9 @@ export type MeshRendererConfig = {
 };
 
 export class MeshRenderer extends Behavior {
-  private modelMatrix = mat4.create();
   private projectionMatrix = mat4.create();
   private buffers: {
+    vao?: WebGLVertexArrayObject;
     position?: WebGLBuffer;
     uv?: WebGLBuffer;
     normal?: WebGLBuffer;
@@ -53,6 +53,14 @@ export class MeshRenderer extends Behavior {
   }
 
   initializeBuffers() {
+    const vao = this.app.gl.createVertexArray();
+    if (!vao) {
+      throw new Error("VAO creation failed");
+    }
+
+    this.buffers.vao = vao;
+    this.app.gl.bindVertexArray(vao);
+
     this.buffers.faces = this.makeBuffer(
       this.mesh.config.faces,
       this.app.gl.ELEMENT_ARRAY_BUFFER
@@ -98,6 +106,8 @@ export class MeshRenderer extends Behavior {
         this.app.gl.FLOAT
       );
     }
+
+    this.app.gl.bindVertexArray(null);
   }
 
   bindAttrib(
@@ -166,6 +176,7 @@ export class MeshRenderer extends Behavior {
   onRenderableUpdate(time: number, transform: Transform) {
     const gl = this.app.gl;
 
+    gl.bindVertexArray(this.buffers.vao || null);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.faces || null);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position || null);
 
@@ -178,11 +189,6 @@ export class MeshRenderer extends Behavior {
       0
     );
 
-    // gl.drawArrays(
-    //   0,
-    //   this.mesh.config.vertexCount
-    // );
-
     const err = gl.getError();
     if (err !== 0) {
       console.log({ err });
@@ -190,5 +196,9 @@ export class MeshRenderer extends Behavior {
         `(MeshRenderer<Mesh#${this.mesh.name}>) webgl failure: ${err}`
       );
     }
+
+    gl.bindVertexArray(null);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 }
