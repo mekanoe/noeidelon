@@ -26,7 +26,9 @@ export class Shader {
   static VERTEX = 35633;
   static FRAGMENT = 35632;
 
-  constructor(private config: ShaderConfig) {}
+  constructor(private config: ShaderConfig) {
+    config.model = 0;
+  }
 
   private vertexCode = "";
   private fragmentCode = "";
