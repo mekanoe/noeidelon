@@ -2,14 +2,10 @@ import { MeshRenderer } from "../renderer/mesh-renderer";
 import { WebGLApp } from "../renderer/webgl";
 import { Renderable } from "../renderer/renderable";
 import { Transform, etoq, v3 } from "../renderer/transform";
-import torus from "../meshes/torus";
-import plane from "../meshes/plane";
-import uvsphere from "../meshes/uvsphere";
-import { mat4, quat } from "gl-matrix";
+import { quat } from "gl-matrix";
 import trianglething from "../meshes/trianglething";
 import teapot from "../meshes/teapot";
 import { basic } from "../common-shaders/basic";
-import { errorShader } from "../common-shaders/error";
 
 const app = new WebGLApp({ fov: 45 });
 
