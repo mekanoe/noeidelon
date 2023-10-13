@@ -214,42 +214,32 @@ export const convertMeshes = async () => {
       : [];
 
     const facesArray: number[] = faces.flatMap((f) => [f.a, f.b, f.c]);
+    const facesMaxValue = facesArray.reduce(
+      (acc, face) => (face > acc ? face : acc),
+      0
+    );
+    const facesBitDepth =
+      facesMaxValue <= 0xff ? 8 : facesMaxValue <= 0xffff ? 16 : 32;
 
     const outFile = file.replace(".ply", ".ts");
-    const outString = `
-import { Mesh } from "../renderer/mesh";
+    const outString = `import { Mesh } from "../renderer/mesh";
 
 // prettier-ignore
-const positions = new Float32Array(${JSON.stringify(positions)});
-
-// prettier-ignore
-const colors = ${
-      vertexConfig.colors ? `new Uint8Array(${JSON.stringify(colors)})` : "null"
-    };
-
-// prettier-ignore
-const uvs = ${
-      vertexConfig.uvs ? `new Float32Array(${JSON.stringify(uvs)})` : "null"
-    };
-
-    
-// prettier-ignore
-const normals = ${
-      vertexConfig.normals
-        ? `new Float32Array(${JSON.stringify(normals)})`
-        : "null"
-    };
-    
-// prettier-ignore
-const faces = new Uint32Array(${JSON.stringify(facesArray)});
-
 export default new Mesh({
-  colors,
-  faces,
+  colors: ${
+    vertexConfig.colors ? `new Uint8Array(${JSON.stringify(colors)})` : "null"
+  },
+  faces: new Uint${facesBitDepth}Array(${JSON.stringify(facesArray)}),
   name: ${JSON.stringify(file)},
-  normals,
-  positions,
-  uvs,
+  normals: ${
+    vertexConfig.normals
+      ? `new Float32Array(${JSON.stringify(normals)})`
+      : "null"
+  },
+  positions: new Float32Array(${JSON.stringify(positions)}),
+  uvs: ${
+    vertexConfig.uvs ? `new Float32Array(${JSON.stringify(uvs)})` : "null"
+  },
   vertexCount: ${vertexCount}
 });
 `;

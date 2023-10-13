@@ -1,5 +1,3 @@
-import { mat4, vec3 } from "gl-matrix";
-import { Transform } from "./transform";
 import { WebGLApp } from "./webgl";
 
 /**
@@ -20,17 +18,21 @@ export type ShaderMapping<
     uv0: Attr;
     normal: Attr;
     vertexColor: Attr;
+
     material?: { [key: string]: Attr };
   };
 
   uniforms: {
-    view: Uniform;
-    projection: Uniform;
-    objectToWorld: Uniform;
-    objectToWorldInv: Uniform;
+    albedo: Uniform;
     light0: Uniform;
     light0Color: Uniform;
+    objectToWorld: Uniform;
+    objectToWorldInv: Uniform;
+    projection: Uniform;
+    texture0: Uniform;
+    texture1: Uniform;
     time: Uniform;
+    view: Uniform;
   };
 };
 
@@ -89,13 +91,16 @@ export class Shader {
         vertexColor: this.attrib(config.attributes.vertexColor),
       },
       uniforms: {
+        albedo: this.uniform(config.uniforms.albedo),
         light0: this.uniform(config.uniforms.light0),
         light0Color: this.uniform(config.uniforms.light0Color),
         objectToWorld: this.uniform(config.uniforms.objectToWorld),
         objectToWorldInv: this.uniform(config.uniforms.objectToWorldInv),
         projection: this.uniform(config.uniforms.projection),
-        view: this.uniform(config.uniforms.view),
+        texture0: this.uniform(config.uniforms.texture0),
+        texture1: this.uniform(config.uniforms.texture1),
         time: this.uniform(config.uniforms.time),
+        view: this.uniform(config.uniforms.view),
       },
     };
   }

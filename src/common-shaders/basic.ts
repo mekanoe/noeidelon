@@ -19,6 +19,9 @@ export const basicShaderConfig: ShaderConfig = {
     light0: "u_light_0",
     light0Color: "u_light_0_color",
     time: "u_time",
+    albedo: "u_albedo",
+    texture0: "u_texture_0",
+    texture1: "u_texture_1",
   },
 };
 

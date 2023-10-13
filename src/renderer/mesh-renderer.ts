@@ -21,6 +21,8 @@ export class MeshRenderer extends Behavior {
     color?: WebGLBuffer;
     faces?: WebGLBuffer;
   } = {};
+  faceDataType: number;
+  colorDataType: number | null;
 
   constructor(
     public app: WebGLApp,
@@ -31,6 +33,24 @@ export class MeshRenderer extends Behavior {
     public config: MeshRendererConfig = {}
   ) {
     super(app);
+
+    this.faceDataType = this.getDataType(mesh.config.faces);
+    this.colorDataType = mesh.config.colors
+      ? this.getDataType(mesh.config.colors)
+      : null;
+  }
+
+  getDataType(array: Uint16Array | Uint32Array | Uint8Array) {
+    switch (array.BYTES_PER_ELEMENT) {
+      case 1:
+        return 5121; // uint8 UNSIGNED_BYTE
+      case 2:
+        return 5123; // uint16 UNSIGNED_SHORT
+      case 4:
+        return 5125; // uint32 UNSIGNED_INT
+      default:
+        return 5126; // float32 FLOAT
+    }
   }
 
   configure(config: MeshRendererConfig) {
@@ -93,7 +113,7 @@ export class MeshRenderer extends Behavior {
         this.buffers.color,
         shaderMap.attributes.vertexColor,
         4,
-        this.app.gl.UNSIGNED_BYTE
+        this.colorDataType || this.app.gl.UNSIGNED_BYTE
       );
     }
 
@@ -158,7 +178,12 @@ export class MeshRenderer extends Behavior {
     );
   }
 
-  onStart() {
+  onStart(_: never, app: WebGLApp) {
+    app.loading("baking vectors");
+    app.telemetry?.addRenderers(1);
+    app.telemetry?.addTriangles(this.mesh.config.faces.length);
+    app.telemetry?.addVertexes(this.mesh.config.vertexCount);
+
     mat4.perspective(
       this.projectionMatrix,
       this.app.config.fov || 45,
@@ -185,7 +210,7 @@ export class MeshRenderer extends Behavior {
     gl.drawElements(
       this.config.drawMode ?? gl.TRIANGLES,
       this.mesh.config.faces.length,
-      gl.UNSIGNED_INT,
+      this.faceDataType,
       0
     );
 

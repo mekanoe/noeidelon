@@ -7,12 +7,16 @@ export type WebGPUAppConfig = {
   zFar?: number;
 };
 
-export type RenderHandle = (time: number, app: WebGLApp) => void;
+export type RenderHandle = (
+  time: number,
+  app: WebGLApp
+) => void | Promise<void>;
 
 export class WebGLApp {
   public canvas: HTMLCanvasElement;
   public telemetry?: Telemetry;
   public gl: WebGL2RenderingContext;
+  private loadingMessages: Set<string> = new Set(["[noeidelon] [stage 2]"]);
 
   public registry: {
     onBeforeUpdate: RenderHandle[];
@@ -71,6 +75,18 @@ export class WebGLApp {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
 
+  loading(message: string) {
+    this.loadingMessages.add(message.toLowerCase());
+
+    (document.querySelector("#loading-text") as HTMLDivElement).innerHTML = [
+      ...this.loadingMessages,
+    ].join("<br />");
+  }
+
+  ready() {
+    document.querySelector("#loading")?.classList.remove("loading-active");
+  }
+
   onBeforeUpdate(handle: RenderHandle) {
     this.registry.onBeforeUpdate.push(handle);
   }
@@ -99,18 +115,34 @@ export class WebGLApp {
     this.registry.onDraw.forEach((handle) => handle(time, this));
   }
 
-  doStart(time: number = 0) {
+  async doStart(time: number = 0) {
+    this.loading("setting launch parameters");
     this.clear();
-    this.registry.onStart.forEach((handle) => handle(time, this));
+
+    try {
+      for (const fn of this.registry.onStart) {
+        await fn(time, this);
+      }
+    } catch (e) {
+      this.loading(
+        `[panic] <span style="color: red">failed to start noeidelon</span>`
+      );
+      if (this.telemetry) {
+        this.loading(`<span style="color: purple">${e}</span>`);
+      }
+      return;
+    }
+
+    this.ready();
   }
 
   async oneShot(time: number = 0) {
-    this.doStart(time);
+    await this.doStart(time);
     this.doUpdate(time);
   }
 
   async start() {
-    this.doStart();
+    await this.doStart();
 
     const run = (time: number) => {
       this.doUpdate(time);

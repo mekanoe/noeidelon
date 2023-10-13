@@ -1,6 +1,6 @@
 export type MeshConfig = {
-  colors: Uint8Array | null;
-  faces: Uint32Array;
+  colors: Uint8Array | Uint16Array | null;
+  faces: Uint32Array | Uint16Array | Uint8Array;
   name: string;
   normals: Float32Array | null;
   positions: Float32Array;

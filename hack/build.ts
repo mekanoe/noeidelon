@@ -27,6 +27,8 @@ const results = await Bun.build({
     ".wgsl": "text",
     ".vert": "text",
     ".frag": "text",
+    ".html": "text",
+    ".md": "text",
   },
   minify: process.env.MINIFY === "false" ? false : true,
   plugins: [glslPlugin],

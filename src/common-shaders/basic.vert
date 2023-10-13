@@ -4,8 +4,9 @@ uniform mat4 u_projection;
 uniform mat4 u_object_to_world;
 uniform mat4 u_object_to_world_inv;
 uniform vec3 u_light_0;
-uniform vec4 u_light_0_color;
-uniform float u_time;
+// uniform vec4 u_light_0_color;
+// uniform float u_time;
+// uniform vec4 u_albedo;
 
 in vec4 a_vertex;
 in vec2 a_uv0;
