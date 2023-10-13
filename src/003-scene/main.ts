@@ -19,19 +19,15 @@ app.onUpdate(() => {
   quat.rotateY(transform.rotation, transform.rotation, 0.001);
 });
 
-setTimeout(() => {
-  new Renderable(
-    app,
-    transform2,
-    new MeshRenderer(app, trianglething, basic(app), camera, light).configure(
-      {}
-    )
-  );
-  new Renderable(
-    app,
-    transform,
-    new MeshRenderer(app, teapot, basic(app), camera, light).configure({})
-  );
+new Renderable(
+  app,
+  transform2,
+  new MeshRenderer(app, trianglething, basic(app), camera, light).configure({})
+);
+new Renderable(
+  app,
+  transform,
+  new MeshRenderer(app, teapot, basic(app), camera, light).configure({})
+);
 
-  app.start();
-}, 7000);
+app.start();
