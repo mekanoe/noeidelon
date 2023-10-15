@@ -19,15 +19,19 @@ export class Texture {
   }
 
   async loadImage() {
-    this.app.telemetry?.addTextures(-1);
-    this.app.loading("Fetching textures...");
-
     if (this.url === "manual") {
       if (this.texture === null) {
         throw new Error("manual specified, but texture was not ready...");
       }
       return;
     }
+
+    if (this.texture !== null) {
+      return;
+    }
+
+    this.app.telemetry?.addTextures(-1);
+    this.app.loading("Fetching textures...");
 
     const image = new Image();
     return new Promise((resolve, reject) => {

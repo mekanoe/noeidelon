@@ -12,7 +12,7 @@ import { basicVertexRounding } from "../common-shaders/basic-vertex-rounding";
 
 const app = new WebGLApp({ fov: 45 });
 
-const camera = new Transform([3, 3, 5], etoq([-15, 40, 0]));
+const camera = new Transform([2, 3, 3], etoq([-15, 40, 0]));
 const light = new Transform([1, 1, 0]);
 
 const transform = new Transform(v3(0), etoq([0, 0, 0]));
