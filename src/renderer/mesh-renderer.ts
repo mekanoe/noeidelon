@@ -156,8 +156,12 @@ export class MeshRenderer extends Behavior {
 
       // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      const uvOverflow = textureObject.config.uvClamp
+        ? gl.CLAMP_TO_EDGE
+        : gl.REPEAT;
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, uvOverflow);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, uvOverflow);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
@@ -174,14 +178,7 @@ export class MeshRenderer extends Behavior {
     textures.forEach(([key, tex], index) => {
       const uniform = (this.shader.mappings.uniforms as any)[key];
       if (!uniform) {
-        console.warn("had no uniform to set for", {
-          textures,
-          key,
-          tex,
-          uniform,
-          index,
-        });
-        return false;
+        return;
       }
 
       gl.activeTexture(intStart + index);
@@ -243,6 +240,8 @@ export class MeshRenderer extends Behavior {
       false,
       mat4.invert(mat4.create(), transform.toMat4())
     );
+
+    this.shader.onPrerender(this.app, time);
   }
 
   async onStart(_: never, app: WebGLApp) {

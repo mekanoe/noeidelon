@@ -1,5 +1,6 @@
 import { Behavior } from "./behavior";
 import { WebGLApp } from "./webgl";
+import bump from "./helper-textures/bump.png";
 
 export class Texture {
   public texture: ImageBitmap | Uint8Array | null = null;
@@ -8,7 +9,8 @@ export class Texture {
 
   constructor(
     public app: WebGLApp,
-    public url: string
+    public url: string,
+    public config: { uvClamp?: boolean } = {}
   ) {}
 
   setImage(data: Uint8Array, width: number, height: number) {
@@ -56,22 +58,3 @@ export class Texture {
     });
   }
 }
-
-export const White = (app: WebGLApp) =>
-  new Texture(app, "manual").setImage(
-    new Uint8Array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]),
-    2,
-    2
-  );
-export const Black = (app: WebGLApp) =>
-  new Texture(app, "manual").setImage(
-    new Uint8Array([0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1]),
-    2,
-    2
-  );
-export const WhyBroke = (app: WebGLApp) =>
-  new Texture(app, "manual").setImage(
-    new Uint8Array([1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1]),
-    2,
-    2
-  );

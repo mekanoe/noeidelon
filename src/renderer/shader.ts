@@ -32,6 +32,7 @@ export type ShaderMapping<
     projection: Uniform;
     texture0: Uniform;
     texture1: Uniform;
+    texture2: Uniform;
     time: Uniform;
     view: Uniform;
   };
@@ -49,6 +50,13 @@ export class Shader {
   public program: WebGLProgram | null = null;
   public mappings: InternalMapping = {} as any;
   public textures: Record<string, Texture> = {};
+
+  public materialValues: Record<string, any> = {};
+  private prerenderHooks: ((
+    app: WebGLApp,
+    shader: Shader,
+    time: number
+  ) => void)[] = [];
 
   get gl() {
     const gl = this._app?.gl;
@@ -73,6 +81,11 @@ export class Shader {
 
   fragment(code: string) {
     this.fragmentCode = code;
+    return this;
+  }
+
+  prerenderHook(fn: (app: WebGLApp, shader: Shader, time: number) => void) {
+    this.prerenderHooks.push(fn);
     return this;
   }
 
@@ -101,6 +114,7 @@ export class Shader {
         projection: this.uniform(config.uniforms.projection),
         texture0: this.uniform(config.uniforms.texture0),
         texture1: this.uniform(config.uniforms.texture1),
+        texture2: this.uniform(config.uniforms.texture2),
         time: this.uniform(config.uniforms.time),
         view: this.uniform(config.uniforms.view),
       },
@@ -158,6 +172,12 @@ export class Shader {
 
   use() {
     this._app?.gl.useProgram(this.program);
+  }
+
+  onPrerender(app: WebGLApp, time: number) {
+    for (const fn of this.prerenderHooks) {
+      fn(app, this, time);
+    }
   }
 }
 

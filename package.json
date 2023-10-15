@@ -4,7 +4,7 @@
   "main": "./hack/build.ts",
   "scripts": {
     "build": "bun $BUNFLAGS .",
-    "build:watch": "MINIFY=false nodemon -e ts,js,frag,vert,glsl,ply",
+    "build:watch": "MINIFY=false nodemon -e ts,js,frag,vert,glsl,ply,png",
     "serve": "serve ./html",
     "dev": "run-p serve build:watch"
   },

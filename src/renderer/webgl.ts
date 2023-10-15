@@ -1,3 +1,4 @@
+import { Editor } from "./editor";
 import { Telemetry } from "./telemetry";
 
 export type WebGPUAppConfig = {
@@ -5,6 +6,8 @@ export type WebGPUAppConfig = {
   context?: GPUCanvasConfiguration;
   zNear?: number;
   zFar?: number;
+  editor?: boolean;
+  telemetry?: boolean;
 };
 
 export type RenderHandle = (
@@ -16,6 +19,7 @@ export class WebGLApp {
   public canvas: HTMLCanvasElement;
   public telemetry?: Telemetry;
   public gl: WebGL2RenderingContext;
+  public editor?: Editor;
   private loadingMessages: Set<string> = new Set(["[noeidelon] [stage 2]"]);
 
   public registry: {
@@ -48,8 +52,12 @@ export class WebGLApp {
       // this.gl.getExtension("OES_element_index_uint"); // default
       this.gl.getExtension("EXT_texture_filter_anisotropic");
 
-      if (location.search.includes("telemetry")) {
+      if (location.search.includes("telemetry") || config.telemetry) {
         this.telemetry = new Telemetry(this);
+      }
+
+      if (location.search.includes("editor") || config.editor) {
+        this.editor = new Editor(this);
       }
     } catch (e) {
       const main = document.querySelector("main");

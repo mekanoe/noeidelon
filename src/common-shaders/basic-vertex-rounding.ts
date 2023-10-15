@@ -22,6 +22,7 @@ export const basicShaderConfig: ShaderConfig = {
     albedo: "u_albedo",
     texture0: "u_texture_0",
     texture1: "u_texture_1",
+    texture2: "u_texture_2",
   },
 };
 
