@@ -46,6 +46,7 @@ export class WebGLApp {
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 
       // this.gl.getExtension("OES_element_index_uint"); // default
+      this.gl.getExtension("EXT_texture_filter_anisotropic");
 
       if (location.search.includes("telemetry")) {
         this.telemetry = new Telemetry(this);

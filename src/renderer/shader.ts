@@ -1,3 +1,4 @@
+import { Texture } from "./texture";
 import { WebGLApp } from "./webgl";
 
 /**
@@ -47,6 +48,7 @@ export class Shader {
   private _app?: WebGLApp;
   public program: WebGLProgram | null = null;
   public mappings: InternalMapping = {} as any;
+  public textures: Record<string, Texture> = {};
 
   get gl() {
     const gl = this._app?.gl;
@@ -116,6 +118,12 @@ export class Shader {
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     gl.attachShader(this.program as WebGLProgram, shader);
+  }
+
+  /// Slot must be the name of the relevant uniform pointer, e.g. texture0
+  addTexture(slot: string, texture: Texture) {
+    this.textures[slot] = texture;
+    return this;
   }
 
   compile() {

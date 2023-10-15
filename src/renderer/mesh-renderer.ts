@@ -20,7 +20,8 @@ export class MeshRenderer extends Behavior {
     normal?: WebGLBuffer;
     color?: WebGLBuffer;
     faces?: WebGLBuffer;
-  } = {};
+    textures: Record<string, WebGLTexture>;
+  } = { textures: {} };
   faceDataType: number;
   colorDataType: number | null;
 
@@ -130,6 +131,72 @@ export class MeshRenderer extends Behavior {
     this.app.gl.bindVertexArray(null);
   }
 
+  async initializeTextures() {
+    const { gl } = this.app;
+
+    for (const [name, textureObject] of Object.entries(this.shader.textures)) {
+      await textureObject.loadImage();
+      const glTex = gl.createTexture();
+      if (!glTex) {
+        throw new Error("failed to allocate texture");
+      }
+      const tex = textureObject.texture as ImageBitmap;
+      gl.bindTexture(gl.TEXTURE_2D, glTex);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        textureObject.width,
+        textureObject.height,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        tex
+      );
+
+      // gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+
+      this.buffers.textures[name] = glTex;
+    }
+  }
+
+  bindTextures() {
+    const { gl } = this.app;
+    const intStart = this.app.gl.TEXTURE0;
+    const textures = Object.entries(this.buffers.textures);
+    const destructors: (() => void)[] = [];
+
+    textures.forEach(([key, tex], index) => {
+      const uniform = (this.shader.mappings.uniforms as any)[key];
+      if (!uniform) {
+        console.warn("had no uniform to set for", {
+          textures,
+          key,
+          tex,
+          uniform,
+          index,
+        });
+        return false;
+      }
+
+      gl.activeTexture(intStart + index);
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.uniform1i(uniform, index);
+
+      destructors.push(() => {
+        gl.activeTexture(intStart + index);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+      });
+    });
+
+    return destructors;
+  }
+
   bindAttrib(
     buffer: WebGLBuffer,
     attribute: string | number,
@@ -178,7 +245,7 @@ export class MeshRenderer extends Behavior {
     );
   }
 
-  onStart(_: never, app: WebGLApp) {
+  async onStart(_: never, app: WebGLApp) {
     app.loading("baking vectors");
     app.telemetry?.addRenderers(1);
     app.telemetry?.addTriangles(this.mesh.config.faces.length);
@@ -196,6 +263,8 @@ export class MeshRenderer extends Behavior {
     this.shader.link();
     this.initializeBuffers();
     this.shader.link();
+
+    await this.initializeTextures();
   }
 
   onRenderableUpdate(time: number, transform: Transform) {
@@ -206,7 +275,7 @@ export class MeshRenderer extends Behavior {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.position || null);
 
     this.initializeShader(time, transform);
-
+    const textureDestructors = this.bindTextures();
     gl.drawElements(
       this.config.drawMode ?? gl.TRIANGLES,
       this.mesh.config.faces.length,
@@ -225,5 +294,11 @@ export class MeshRenderer extends Behavior {
     gl.bindVertexArray(null);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    textureDestructors.forEach((i) => i());
   }
 }
+
+const isPowerOfTwo = (x: number) => {
+  return (x & (x - 1)) === 0;
+};

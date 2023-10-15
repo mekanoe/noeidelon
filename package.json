@@ -29,7 +29,7 @@
     "ignore": [
       "html/",
       "README.md",
-      "src/meshes/*.ts"
+      "src/meshes/**/*.ts"
     ],
     "delay": 1000,
     "exec": "bun run . --"

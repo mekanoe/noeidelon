@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import { globSync } from "glob";
+import { relative, resolve, dirname } from "node:path";
 
 const w = 1;
 
@@ -49,8 +50,13 @@ type Triangle = {
 //   ...vertToArray(t.c),
 // ];
 
+const meshAbsolutePath = resolve("./src/renderer/mesh.ts");
+
+const getMeshImportPath = (thisFile: string) =>
+  relative(dirname(thisFile), meshAbsolutePath).replace(/\.ts$/g, "");
+
 export const convertMeshes = async () => {
-  const meshes = globSync("src/meshes/*.ply");
+  const meshes = globSync("src/meshes/**/*.ply");
 
   for (const file of meshes) {
     const ply = await Bun.file(file).text();
@@ -222,7 +228,7 @@ export const convertMeshes = async () => {
       facesMaxValue <= 0xff ? 8 : facesMaxValue <= 0xffff ? 16 : 32;
 
     const outFile = file.replace(".ply", ".ts");
-    const outString = `import { Mesh } from "../renderer/mesh";
+    const outString = `import { Mesh } from "${getMeshImportPath(outFile)}";
 
 // prettier-ignore
 export default new Mesh({

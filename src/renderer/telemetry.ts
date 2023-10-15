@@ -9,6 +9,7 @@ export class Telemetry extends Behavior {
   public activeTriangles: number = 0;
   public activeVertexes: number = 0;
   public activeRenderers: number = 0;
+  public activeTextures: number = 0;
 
   constructor(
     public app: WebGLApp,
@@ -55,7 +56,9 @@ export class Telemetry extends Behavior {
       this.app.registry.onAfterUpdate.length
     } | d: ${this.app.registry.onDraw.length}<br />render :: mr: ${
       this.activeRenderers
-    } | v: ${this.activeVertexes} | t: ${this.activeTriangles}`;
+    } | v: ${this.activeVertexes} | t: ${
+      this.activeTriangles
+    }<br />others :: tex: ${this.activeTextures}`;
   }
 
   onAfterUpdate(time: number) {
@@ -74,5 +77,9 @@ export class Telemetry extends Behavior {
 
   addRenderers(n: number) {
     this.activeRenderers += n;
+  }
+
+  addTextures(n: number) {
+    this.activeTextures += n;
   }
 }
