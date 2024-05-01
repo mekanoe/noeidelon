@@ -2,6 +2,7 @@ import { Shader, ShaderConfig } from "../../renderer/shader";
 import { WebGLApp } from "../../renderer/webgl";
 import vert from "../../common-shaders/basic.vert";
 import frag from "./outer.frag";
+import fragAlt3 from "./outer-alt3.frag";
 
 export const basicShaderConfig: ShaderConfig = {
   attributes: {
@@ -26,5 +27,10 @@ export const basicShaderConfig: ShaderConfig = {
   },
 };
 
-export const outer = (app: WebGLApp) =>
-  new Shader(basicShaderConfig).vertex(vert).fragment(frag).app(app);
+export const outerFrags = {
+  normal: frag,
+  alt3: fragAlt3,
+};
+
+export const outer = (app: WebGLApp, fragShader: string = frag) =>
+  new Shader(basicShaderConfig).vertex(vert).fragment(fragShader).app(app);

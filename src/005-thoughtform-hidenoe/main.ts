@@ -3,7 +3,7 @@ import { WebGLApp } from "../renderer/webgl";
 import { Renderable } from "../renderer/renderable";
 import { Transform, etoq, v3 } from "../renderer/transform";
 import plane from "../meshes/plane";
-import { outer } from "./shaders/outer";
+import { outer, outerFrags } from "./shaders/outer";
 import { frags, noe } from "./shaders/noe";
 import { createGizmo } from "../renderer/gizmo";
 
@@ -32,14 +32,8 @@ document.body.addEventListener("mousemove", (event) => {
 
 app.onUpdate((time, app) => {});
 
-new Renderable(
-  app,
-  transformPlane,
-  new MeshRenderer(app, plane, outer(app), camera).configure({})
-);
-
 let noeShader = frags.normal;
-
+let hShader = outerFrags.normal;
 if (location.search.includes("alt1")) {
   noeShader = frags.debug;
 }
@@ -47,6 +41,16 @@ if (location.search.includes("alt1")) {
 if (location.search.includes("alt2")) {
   noeShader = frags.alt2;
 }
+
+if (location.search.includes("alt3")) {
+  hShader = outerFrags.alt3;
+}
+
+new Renderable(
+  app,
+  transformPlane,
+  new MeshRenderer(app, plane, outer(app, hShader), camera).configure({})
+);
 
 new Renderable(
   app,
