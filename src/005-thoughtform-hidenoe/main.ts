@@ -4,10 +4,8 @@ import { Renderable } from "../renderer/renderable";
 import { Transform, etoq, v3 } from "../renderer/transform";
 import plane from "../meshes/plane";
 import { outer } from "./shaders/outer";
-import { noe } from "./shaders/noe";
+import { frags, noe } from "./shaders/noe";
 import { createGizmo } from "../renderer/gizmo";
-
-const useDebug = location.search.includes("alt1");
 
 const app = new WebGLApp({ fov: 45 });
 
@@ -40,10 +38,20 @@ new Renderable(
   new MeshRenderer(app, plane, outer(app), camera).configure({})
 );
 
+let noeShader = frags.normal;
+
+if (location.search.includes("alt1")) {
+  noeShader = frags.debug;
+}
+
+if (location.search.includes("alt2")) {
+  noeShader = frags.alt2;
+}
+
 new Renderable(
   app,
   transformSphere,
-  new MeshRenderer(app, plane, noe(app, useDebug), camera, light).configure({})
+  new MeshRenderer(app, plane, noe(app, noeShader), camera, light).configure({})
 );
 
 // createGizmo(app, camera, light);

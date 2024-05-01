@@ -3,6 +3,7 @@ import { WebGLApp } from "../../renderer/webgl";
 import vert from "../../common-shaders/basic.vert";
 import frag from "./noe.frag";
 import fragDebug from "./noe-debug.frag";
+import fragAlt2 from "./noe-alt2.frag";
 
 export const basicShaderConfig: ShaderConfig = {
   attributes: {
@@ -27,8 +28,11 @@ export const basicShaderConfig: ShaderConfig = {
   },
 };
 
-export const noe = (app: WebGLApp, debug: boolean = false) =>
-  new Shader(basicShaderConfig)
-    .vertex(vert)
-    .fragment(debug ? fragDebug : frag)
-    .app(app);
+export const frags = {
+  normal: frag,
+  debug: fragDebug,
+  alt2: fragAlt2,
+};
+
+export const noe = (app: WebGLApp, fragShader: string = frag) =>
+  new Shader(basicShaderConfig).vertex(vert).fragment(fragShader).app(app);
