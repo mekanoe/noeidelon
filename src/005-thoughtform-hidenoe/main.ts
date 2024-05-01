@@ -3,16 +3,12 @@ import { WebGLApp } from "../renderer/webgl";
 import { Renderable } from "../renderer/renderable";
 import { Transform, etoq, v3 } from "../renderer/transform";
 import plane from "../meshes/plane";
-import texture0 from "../meshes/trianglething/textures/texture0.png";
-import { Texture } from "../renderer/texture";
 import { outer } from "./shaders/outer";
-import uvsphere from "../meshes/uvsphere";
-import { basic } from "../common-shaders/basic";
 import { noe } from "./shaders/noe";
-import uvsphereInverted from "../meshes/uvsphere-inverted";
+
+const useDebug = location.search.includes("alt1");
 
 const app = new WebGLApp({ fov: 45 });
-const light = new Transform(v3(-5));
 
 const camera = new Transform([0, 0, 2], etoq([0, 0, 0]));
 const transformPlane = new Transform(v3(0), etoq([0, 180, 0]), v3(1.8));
@@ -32,7 +28,7 @@ new Renderable(
 new Renderable(
   app,
   transformSphere,
-  new MeshRenderer(app, plane, noe(app), camera).configure({})
+  new MeshRenderer(app, plane, noe(app, useDebug), camera).configure({})
 );
 
 // createGizmo(app, camera, light);
