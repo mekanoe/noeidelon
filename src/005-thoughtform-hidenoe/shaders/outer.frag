@@ -7,9 +7,9 @@ in vec2 uv0;
 
 out vec4 fragColor;
 
-vec2 squareImaginary(vec2 number){
+vec2 squareImaginary(vec2 number, float mod){
 	return vec2(
-		pow(number.x,2.0) - pow(number.y, 2.0),
+		pow(number.x * mod,2.0) - pow(number.y * mod, 2.0),
 		2.0 * number.x * number.y
 	);
 }
@@ -19,7 +19,8 @@ float iterateMandelbrot(vec2 coord){
   float maxIterations = 100.0;
 
 	for (float i = 0.0; i < maxIterations; i++) {
-		z = squareImaginary(z) + (coord * -1.3);
+		float factor = 2.6 + (1.3 * sin(u_time * 0.0001));
+		z = squareImaginary(z, factor + 1.0) + (coord / factor);
 		if (length(z) > 2.0) return i / float(maxIterations);
 	}
 
@@ -35,5 +36,8 @@ void main() {
 
   vec2 outerNoise = (mandelbrot) * (1.0 - uvMirror * 0.5);
   fragColor.gb += (1.0 - mandelbrot) * outerNoise;
+
+	fragColor.r += pow(1.0 - length(uvMirror), 5.0);
+
   fragColor.a = 1.0;
 }
