@@ -37,7 +37,7 @@ void main() {
   vec2 outerNoise = (mandelbrot) * (1.0 - uvMirror * 0.5);
   fragColor.gb += (1.0 - mandelbrot) * outerNoise;
 
-	fragColor.r += pow(1.0 - length(uvMirror), 5.0);
+	fragColor.r += pow(1.0 - length(uvMirror), 8.0);
 
   fragColor.a = 1.0;
 }
