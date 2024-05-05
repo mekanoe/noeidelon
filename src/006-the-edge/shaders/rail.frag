@@ -1,6 +1,11 @@
 #version 300 es
 precision highp float;
 
+/*
+  This one is weird... We ran into engine limitations that won't exist in future iterations
+  Namely that we don't have a way to get screen space pixel location yet.
+*/
+
 uniform float u_time;
 
 in vec2 uv0;
