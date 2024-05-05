@@ -13,6 +13,7 @@ https://art.mekanoe.com
 - [./003-scene](https://art.mekanoe.com/003-scene)
 - [./004-a-new-leaf](https://art.mekanoe.com/004-a-new-leaf)
 - [./005-thoughtform-hidenoe](https://art.mekanoe.com/005-thoughtform-hidenoe)
+- [./006-the-edge](https://art.mekanoe.com/006-the-edge)
 
 ## Development
 
