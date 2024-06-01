@@ -4,16 +4,16 @@ Foxes dream of electron beams.
 
 **noe** + **eidelon** _(n. a thing, an image, a reflection)_
 
-https://art.mekanoe.com
+https://3d.noe.sh
 
 ## Artworks
 
-- [./001-platform-provenance](https://art.mekanoe.com/001-platform-provenance)
-- [./002-webgl-engine](https://art.mekanoe.com/002-webgl-engine)
-- [./003-scene](https://art.mekanoe.com/003-scene)
-- [./004-a-new-leaf](https://art.mekanoe.com/004-a-new-leaf)
-- [./005-thoughtform-hidenoe](https://art.mekanoe.com/005-thoughtform-hidenoe)
-- [./006-the-edge](https://art.mekanoe.com/006-the-edge)
+- [./001-platform-provenance](https://3d.noe.sh/001-platform-provenance)
+- [./002-webgl-engine](https://3d.noe.sh/002-webgl-engine)
+- [./003-scene](https://3d.noe.sh/003-scene)
+- [./004-a-new-leaf](https://3d.noe.sh/004-a-new-leaf)
+- [./005-thoughtform-hidenoe](https://3d.noe.sh/005-thoughtform-hidenoe)
+- [./006-the-edge](https://3d.noe.sh/006-the-edge)
 
 ## Development
 
