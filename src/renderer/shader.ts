@@ -35,6 +35,7 @@ export type ShaderMapping<
     texture2: Uniform;
     time: Uniform;
     view: Uniform;
+    screenSize: Uniform;
   };
 };
 
@@ -117,6 +118,7 @@ export class Shader {
         texture2: this.uniform(config.uniforms.texture2),
         time: this.uniform(config.uniforms.time),
         view: this.uniform(config.uniforms.view),
+        screenSize: this.uniform(config.uniforms.screenSize),
       },
     };
   }

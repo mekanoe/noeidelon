@@ -175,3 +175,7 @@ dist
 .DS_Store
 
 *.blend?
+
+result
+.direnv
+html

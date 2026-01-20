@@ -62,11 +62,11 @@ export class WebGLApp {
     } catch (e) {
       const main = document.querySelector("main");
       if (main) {
-        main.innerHTML = `<div><i>your browser didn't let me set up webgl.</i></div>`;
+        main.innerHTML = `<div><i>this browser didn't let the engine set up webgl.</i></div>`;
       }
 
       throw new Error(
-        `Unable to initialize WebGL. Your browser or machine may not support it.\n  -> ${e}`
+        `Unable to initialize WebGL. This browser or machine may not support it.\n  -> ${e}`
       );
     }
   }

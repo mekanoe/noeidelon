@@ -1,5 +1,6 @@
 {
   "name": "noeidelon",
+  "version": "0.0.0",
   "type": "module",
   "main": "./hack/build.ts",
   "scripts": {

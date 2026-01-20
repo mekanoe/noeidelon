@@ -9,6 +9,7 @@ export type MeshRendererConfig = {
   drawMode?: number;
   cullMode?: number;
   meshTransform?: mat4; // Do not use this for per-frame shit. Just the model pre-transform.
+  projectionMode?: "orthographic" | "perspective";
 };
 
 export class MeshRenderer extends Behavior {
@@ -230,6 +231,10 @@ export class MeshRenderer extends Behavior {
     this.shader.use();
 
     gl.uniform1f(uniforms.time, time);
+    gl.uniform2fv(uniforms.screenSize, [
+      this.app.canvas.clientWidth,
+      this.app.canvas.clientHeight,
+    ]);
     gl.uniform4fv(uniforms.light0Color, [1, 1, 1, 1]);
     gl.uniformMatrix4fv(uniforms.view, false, view);
     gl.uniformMatrix4fv(uniforms.projection, false, this.projectionMatrix);
@@ -250,13 +255,15 @@ export class MeshRenderer extends Behavior {
     app.telemetry?.addTriangles(this.mesh.config.faces.length);
     app.telemetry?.addVertexes(this.mesh.config.vertexCount);
 
-    mat4.perspective(
-      this.projectionMatrix,
-      this.app.config.fov || 45,
-      this.app.aspect,
-      this.app.config.zNear || 0.1,
-      this.app.config.zFar || 100
-    );
+    if (this.config.projectionMode !== "orthographic") {
+      mat4.perspective(
+        this.projectionMatrix,
+        this.app.config.fov || 45,
+        this.app.aspect,
+        this.app.config.zNear || 0.1,
+        this.app.config.zFar || 100
+      );
+    }
 
     this.shader.compile();
     this.shader.link();

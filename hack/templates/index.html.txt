@@ -25,7 +25,7 @@
     <div class="subtext">
       << noeidelon >>
       <a href="https://github.com/mekanoe/noeidelon">[github]</a>
-      <a href="https://sapphic.engineer/noe" rel="me">[fedi]</a>
+      <a href="https://dolly.sh/noe" rel="me">[fedi]</a>
       <br />a collection of 3D works
     </div>
   </header>

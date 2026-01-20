@@ -1,0 +1,17 @@
+when:
+  - event: push
+    branch: main
+
+steps:
+  - name: build & deploy
+    image: git.lix.systems/lix-project/lix
+    commands:
+      - nix run .#deploy
+    environment:
+      NIX_CONFIG: |
+        experimental-features = flakes nix-command
+        accept-flake-config = true
+      AWS_ACCESS_KEY_ID:
+        from_secret: static_sites_client
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: static_sites_secret

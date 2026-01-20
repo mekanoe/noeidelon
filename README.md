@@ -14,6 +14,8 @@ https://art.mekanoe.com
 - [./004-a-new-leaf](https://art.mekanoe.com/004-a-new-leaf)
 - [./005-thoughtform-hidenoe](https://art.mekanoe.com/005-thoughtform-hidenoe)
 - [./006-the-edge](https://art.mekanoe.com/006-the-edge)
+- [./006a-ssfx-experiment](https://art.mekanoe.com/006a-ssfx-experiment)
+- [./007-divinity](https://art.mekanoe.com/007-divinity)
 
 ## Development
 
