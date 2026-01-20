@@ -33,7 +33,7 @@ export const generate = async (works: string[]) => {
     "<!--/INSERT/-->",
     allWorks
       .map((work) => `<li><a href="/${work}">./${work}</a></li>`)
-      .join("\n      ")
+      .join("\n      "),
   );
   await Bun.write("html/index.html", index);
   console.log(chalk.yellow(`  -> html/index.html...`));
@@ -42,8 +42,8 @@ export const generate = async (works: string[]) => {
     "<!--/INSERT/-->",
     allWorks
       .reverse()
-      .map((work) => `- [./${work}](https://art.mekanoe.com/${work})`)
-      .join("\n")
+      .map((work) => `- [./${work}](https://3d.noe.sh/${work})`)
+      .join("\n"),
   );
   await Bun.write("README.md", readme);
   console.log(chalk.yellow(`  -> README.md...`));

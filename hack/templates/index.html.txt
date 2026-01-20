@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<title>com.mekanoe.art //</title>
+<title>sh.noe.3d //</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
@@ -24,8 +24,8 @@
     <div>com.mekanoe.art //</div>
     <div class="subtext">
       << noeidelon >>
-      <a href="https://github.com/mekanoe/noeidelon">[github]</a>
-      <a href="https://dolly.sh/noe" rel="me">[fedi]</a>
+      <a href="https://git.dolly.sh/doll/3d">[source]</a>
+      <a href="https://dis.sociat.ing/@41666" rel="me">[fedi]</a>
       <br />a collection of 3D works
     </div>
   </header>

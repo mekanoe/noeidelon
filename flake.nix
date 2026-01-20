@@ -56,6 +56,14 @@
             });
           };
 
+          generate = {
+            type = "app";
+            program = pkgs.lib.getExe (pkgs.writeShellApplication {
+              name = "serve";
+              text = "${pkgs.lib.getExe pkgs.bun} run .";
+            });
+          };
+
           deploy = pkgs.mkDeployStaticSiteApp {
             name = "3d.noe.sh";
             package = packages.default;

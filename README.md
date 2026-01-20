@@ -4,7 +4,7 @@ Foxes dream of electron beams.
 
 **noe** + **eidelon** _(n. a thing, an image, a reflection)_
 
-https://art.mekanoe.com
+https://3d.noe.sh
 
 ## Artworks
 
